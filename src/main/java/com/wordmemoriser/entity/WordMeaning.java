@@ -8,7 +8,7 @@ import lombok.ToString;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Data
@@ -16,15 +16,20 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Entity
-public class EnglishWord {
+public class WordMeaning {
 
     @Id
     @GeneratedValue
     private int Id;
 
-    private String value;
+    private String englishMeaning;
 
-    @ManyToMany
-    private List<TurkishWord> turkishWords;
+    private String turkishMeaning;
+
+    private String example;
+
+    @OneToMany
+    private List<Word> meaningWords;
+
 
 }

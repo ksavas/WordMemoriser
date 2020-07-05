@@ -1,6 +1,5 @@
 package com.wordmemoriser.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,12 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Entity
-public class TurkishWord {
-
+public class WordValue {
 
     @Id
     @GeneratedValue
-    private int id;
+    private int Id;
 
     public String getValue() {
         return value;
@@ -31,13 +29,10 @@ public class TurkishWord {
 
     private String value;
 
-    private String wordClass;
+    private String language;
 
-    private int Point;
+    @OneToMany
+    private List<Word> words;
 
-
-
-    @ManyToMany
-    private List<EnglishWord> englishWords;
 
 }

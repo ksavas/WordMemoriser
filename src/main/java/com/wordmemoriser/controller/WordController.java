@@ -1,11 +1,11 @@
 package com.wordmemoriser.controller;
 
 
-import com.wordmemoriser.dto.TurkishWordRequest;
-import com.wordmemoriser.entity.TurkishWord;
-import com.wordmemoriser.service.TurkishWordService;
+import com.wordmemoriser.dto.WordRequest;
+import com.wordmemoriser.entity.Word;
+import com.wordmemoriser.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,16 +17,13 @@ public class WordController {
 
 
     @Autowired
-    private TurkishWordService turkishWordService;
-
+    private WordService wordService ;
 
     @PostMapping("/saveWord")
-    public TurkishWord saveWord(@RequestBody TurkishWordRequest turkishWordRequest){
-        return  turkishWordService.saveWordIfNotExist(turkishWordRequest.getTurkishWord());
+    public ResponseEntity<List<Word>> saveWord(@RequestBody WordRequest wordRequest){
+        return  wordService.saveWordIfNotExist(wordRequest.getWord());
     }
-    @GetMapping("/findAllWords")
-    public List<TurkishWord> getAllWords(){
-        return  turkishWordService.getAllWords();
-    }
+
+
 
 }
