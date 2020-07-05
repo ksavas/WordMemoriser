@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WordService {
@@ -18,7 +19,7 @@ public class WordService {
 
 
     public ResponseEntity<List<Word>> saveWordIfNotExist(Word word){
-        List<Word> words = wordRespository.findAll().stream().filter(currentWord -> word.getValue().equalsIgnoreCase(currentWord.getValue());
+        List<Word> words = wordRespository.findAll().stream().filter(currentWord -> word.getValue().equalsIgnoreCase(currentWord.getValue())).collect(Collectors.toList());
         if(words.size()==0){
             return new ResponseEntity<List<Word>>(Arrays.asList(wordRespository.save(word)), HttpStatus.OK);
         }
