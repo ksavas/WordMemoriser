@@ -1,47 +1,65 @@
-package com.wordmemoriser.model;
+package com.wordmemoriser.Word;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wordmemoriser.WordMeaning.WordMeaning;
+import com.wordmemoriser.WordValue.WordValue;
 import lombok.*;
 
+import javax.persistence.JoinColumn;
 import javax.persistence.*;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Entity
 @Builder
+@Entity(name = "words")
+@Getter
+@Setter
+@Table(name = "words")
 public class Word {
 
-    public int getId() {
-        return Id;
-    }
-
-    public void setId(int id) {
-        Id = id;
-    }
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private int Id;
 
-    @ManyToOne
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @Getter
+    @Setter
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JoinColumn(name = "word_meaning_id")
+    @JsonIgnore
     private WordMeaning wordMeaning;
 
-    @ManyToOne
-    private WordValue wordValue;
 
-    public String getValue(){
-        return wordValue.getValue();
-    }
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Getter
+    @Setter
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JoinColumn(name = "tr_word_value_id")
+    @JsonIgnore
+    private WordValue trWordValue;
 
-    private int point;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Getter
+    @Setter
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JoinColumn(name = "en_word_value_id")
+    @JsonIgnore
+    private WordValue enWordValue;
 
-    public int getPoint() {
-        return point;
-    }
+    @Getter
+    @Setter
+    private int enAskedPoint;
 
-    public void addPoint(int point) {
-        this.point = this.point + point;
-    }
+    @Getter
+    @Setter
+    private int trAskedPoint;
 
+    @Getter
+    @Setter
+    private String wordType;
 }

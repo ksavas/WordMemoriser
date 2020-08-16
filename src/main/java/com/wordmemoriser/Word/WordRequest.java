@@ -1,7 +1,6 @@
-package com.wordmemoriser.dto;
+package com.wordmemoriser.Word;
 
 
-import com.wordmemoriser.model.WordTemplate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

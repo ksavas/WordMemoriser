@@ -1,63 +1,69 @@
-package com.wordmemoriser.model;
-
+package com.wordmemoriser.WordValue;
+import ch.qos.logback.classic.db.names.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wordmemoriser.Word.Word;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
-
-@NoArgsConstructor()
-@AllArgsConstructor()
-@Setter
-@Getter
-@ToString
 @Builder
-@Entity
+@Entity(name = "word_values")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class WordValue {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
     private int Id;
 
+    @Getter
+    @Setter
     private String value;
 
+    @Getter
+    @Setter
     private String language;
 
-    @OneToMany
-    private List<Word> words;
+    @Getter
+    @Setter
+    private String checkedWordValue;
 
-    public int getId() {
-        return Id;
+    @OneToMany(
+            targetEntity = com.wordmemoriser.Word.Word.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER,
+            mappedBy = "trWordValue"
+    )
+    @Getter
+    @Setter
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<Word> trMeantWords;
+
+    @OneToMany(
+            targetEntity = com.wordmemoriser.Word.Word.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER,
+            mappedBy = "enWordValue"
+    )
+    @Getter
+    @Setter
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<Word> enMeantWords;
+
+    public void addTrMeantWord(Word word){
+        this.trMeantWords.add(word);
     }
-
-    public void setId(int id) {
-        Id = id;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-
-    public List<Word> getWords() {
-        return words;
-    }
-
-    public void setWords(List<Word> words) {
-        this.words = words;
+    public void addEnMeantWord(Word word){
+        this.enMeantWords.add(word);
     }
 
 }
