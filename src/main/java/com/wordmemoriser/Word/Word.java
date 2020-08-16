@@ -1,9 +1,6 @@
-package com.wordmemoriser.entity;
+package com.wordmemoriser.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,7 +9,16 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 @Entity
+@Builder
 public class Word {
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
 
     @Id
     @GeneratedValue

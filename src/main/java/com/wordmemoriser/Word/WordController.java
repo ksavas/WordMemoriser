@@ -2,7 +2,7 @@ package com.wordmemoriser.controller;
 
 
 import com.wordmemoriser.dto.WordRequest;
-import com.wordmemoriser.entity.Word;
+import com.wordmemoriser.model.Word;
 import com.wordmemoriser.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class WordController {
 
     @PostMapping("/saveWord")
     public ResponseEntity<List<Word>> saveWord(@RequestBody WordRequest wordRequest){
-        return  wordService.saveWordIfNotExist(wordRequest.getWord());
+        return  wordService.saveWordIfNotExist(wordRequest.getWordTemplate());
     }
 
 
