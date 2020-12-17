@@ -1,14 +1,12 @@
 package com.wordmemoriser.WordMeaning;
 
-import com.wordmemoriser.Word.Word;
-import com.wordmemoriser.Word.WordRespository;
-import com.wordmemoriser.Word.WordTemplate;
-import com.wordmemoriser.WordValue.WordValue;
+import com.wordmemoriser.Word.WordRequestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
+import java.util.HashSet;
+import java.util.ArrayList;
 
 @Service
 public class WordMeaningService {
@@ -16,17 +14,19 @@ public class WordMeaningService {
     @Autowired
     WordMeaningRepository wordMeaningRepository;
 
-    public WordMeaningHolder saveWordMeaning(WordTemplate wordTemplate){
+    private List<WordMeaning> currentWordMeanings;
 
-        String checkedTurkishMeaning = wordTemplate.trMeaning
+    public WordMeaningHolder checkWordMeaning(WordRequestTemplate wordRequestTemplate){
+
+        String checkedTurkishMeaning = wordRequestTemplate.trMeaning
                 .replace(" ","")
                 .toLowerCase();
 
-        String checkedEnglishMeaning = wordTemplate.enMeaning
+        String checkedEnglishMeaning = wordRequestTemplate.enMeaning
                 .replace(" ","")
                 .toLowerCase();
 
-        String checkedExample = wordTemplate.example
+        String checkedExample = wordRequestTemplate.example
                 .replace(" ","")
                 .toLowerCase();
 
@@ -41,16 +41,15 @@ public class WordMeaningService {
 
         if(!optionalWordMeaning.isPresent()){
             WordMeaning newWordMeaning = WordMeaning.builder()
-                    .turkishMeaning(wordTemplate.trMeaning)
-                    .englishMeaning(wordTemplate.enMeaning)
-                    .example(wordTemplate.example)
+                    .turkishMeaning(wordRequestTemplate.trMeaning)
+                    .englishMeaning(wordRequestTemplate.enMeaning)
+                    .example(wordRequestTemplate.example)
                     .checkedTurkishMeaning(checkedTurkishMeaning)
                     .checkedEnglishMeaning(checkedEnglishMeaning)
                     .checkedExample(checkedExample)
                     .words(new HashSet<>())
                     .build();
 
-            wordMeaningRepository.save(newWordMeaning);
             WordMeaningHolder wordMeaningHolder = WordMeaningHolder
                     .builder()
                     .wordMeaning(newWordMeaning)
@@ -67,13 +66,31 @@ public class WordMeaningService {
         }
     }
 
-    public List<WordMeaning> findWordMeaningsByWords(List<Word> words){
+    public WordMeaning saveWordMeaning(WordMeaning wordMeaning){
+        return wordMeaningRepository.save(wordMeaning);
+    }
 
-        Set<Integer> wordMeaningIds = words
+    public void deleteWordMeaningIfChildless(WordMeaning wordMeaning){
+        if(wordMeaning.getWords().size() == 1){
+            wordMeaningRepository.deleteWordMeaningById(wordMeaning.getId());
+        }
+    }
+
+    public void setRepository(){
+        currentWordMeanings = new ArrayList<>(wordMeaningRepository.findAll());
+    }
+
+    public Integer getMinWordMeaningCount(){
+        int trCount = (int) currentWordMeanings
                 .stream()
-                .map(x -> x.getWordMeaning().getId())
-                .collect(Collectors.toSet());
+                .map(x -> x.getTurkishMeaning())
+                .count();
 
-        return wordMeaningRepository.findAllById(wordMeaningIds);
+        int enCount = (int) currentWordMeanings
+                .stream()
+                .map(x -> x.getEnglishMeaning())
+                .count();
+
+        return Math.min(trCount, enCount);
     }
 }

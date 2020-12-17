@@ -17,22 +17,21 @@ public class WordValueHolder {
 
     private WordValue trWordValue;
 
-    private boolean trWordValueExist;
+    private boolean trWordValueExisted;
 
     private WordValue enWordValue;
 
-    private boolean enWordValueExist;
+    private boolean enWordValueExisted;
 
 
-    public void setWordValue(WordValue wordValue, boolean wordValueExist){
+    public void setWordValue(WordValue wordValue, boolean wordValueExists){
         if(wordValue.getLanguage().equals("TR")){
             this.trWordValue=wordValue;
-            this.trWordValueExist=wordValueExist;
+            this.trWordValueExisted=wordValueExists;
         }
         else {
             this.enWordValue=wordValue;
-            this.enWordValueExist=wordValueExist;
+            this.enWordValueExisted=wordValueExists;
         }
-
     }
 }

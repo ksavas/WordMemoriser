@@ -1,17 +1,19 @@
 package com.wordmemoriser.Word;
 
 import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.ToString;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @ToString
-public class WordTemplate {
+public class WordPointTemplate {
+
+    public int id;
 
     public String trWordValue;
 
@@ -21,8 +23,8 @@ public class WordTemplate {
 
     public String enMeaning;
 
-    public String example;
-
     public String wordType;
+
+    public int point;
 
 }

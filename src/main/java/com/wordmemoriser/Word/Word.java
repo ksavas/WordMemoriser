@@ -1,12 +1,25 @@
 package com.wordmemoriser.Word;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wordmemoriser.Exam.ExamType;
 import com.wordmemoriser.WordMeaning.WordMeaning;
 import com.wordmemoriser.WordValue.WordValue;
-import lombok.*;
-
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 import javax.persistence.JoinColumn;
-import javax.persistence.*;
+import javax.persistence.Table;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.ManyToOne;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +36,7 @@ public class Word {
     @Setter
     private int Id;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
     @ToString.Exclude
@@ -33,7 +46,7 @@ public class Word {
     private WordMeaning wordMeaning;
 
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
     @ToString.Exclude
@@ -53,13 +66,32 @@ public class Word {
 
     @Getter
     @Setter
-    private int enAskedPoint;
-
-    @Getter
-    @Setter
-    private int trAskedPoint;
+    private int point;
 
     @Getter
     @Setter
     private String wordType;
+
+
+    public String getValue(ExamType examType, Language language){
+        if(examType.equals(ExamType.WORD) && language.equals(Language.TR)){
+            return trWordValue.getValue();
+        }
+        else if(examType.equals(ExamType.WORD) && language.equals(Language.EN)){
+            return enWordValue.getValue();
+        }
+        else if(examType.equals(ExamType.MEANING) && language.equals(Language.TR)){
+            return wordMeaning.getTurkishMeaning();
+        }
+        else if(examType.equals(ExamType.MEANING) && language.equals(Language.EN)){
+            return wordMeaning.getEnglishMeaning();
+        }
+        else{
+            return null;
+        }
+    }
+
+    public void setPoint(Integer point){
+        this.point += point;
+    }
 }

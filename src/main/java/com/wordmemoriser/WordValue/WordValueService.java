@@ -2,8 +2,10 @@ package com.wordmemoriser.WordValue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.HashSet;
+import java.util.ArrayList;
 
 @Service
 public class WordValueService {
@@ -14,19 +16,23 @@ public class WordValueService {
     @Autowired
     private WordValueHolder wordValueHolder;
 
-    public WordValueHolder SaveWordValuesIfNotExist(String trWordValue, String enWordValue){
-        String checkedTrValue = trWordValue
-                .replace(" ","")
-                .toLowerCase();
+    List<WordValue> currentWordValues;
 
-        String checkedEnValue = enWordValue
-                .replace(" ","")
-                .toLowerCase();
+    public WordValueHolder SaveWordValuesIfNotExist(String trWordValue, String enWordValue){
+        String checkedTrValue = getCheckedWordValue(trWordValue);
+        String checkedEnValue = getCheckedWordValue(enWordValue);
 
         saveWordValueIfNotExist(trWordValue,"TR",checkedTrValue);
         saveWordValueIfNotExist(enWordValue,"EN",checkedEnValue);
 
         return wordValueHolder;
+    }
+
+    private String getCheckedWordValue(String rawWordValue){
+        return rawWordValue
+                .replace(" ","")
+                .toLowerCase()
+                .trim();
     }
 
     private void saveWordValueIfNotExist(String wordValue, String language, String checkedWordValue){
@@ -62,7 +68,32 @@ public class WordValueService {
         wordValueHolder.setWordValue(currentWordValue,isExist);
     }
 
-    public List<WordValue> getAllWordValues(){
-        return wordValueRepository.findAll();
+    public void deleteWordValueIfChildless(WordValue wordValue){
+        if(wordValue.getLanguage().equalsIgnoreCase("TR") && wordValue.getTrMeantWords().size() == 1 && wordValue.getEnMeantWords().size() == 0){
+            wordValueRepository.deleteWordValueById(wordValue.getId());
+        }
+        else if (wordValue.getLanguage().equalsIgnoreCase("EN") && wordValue.getEnMeantWords().size() == 1 && wordValue.getTrMeantWords().size() == 0){
+            wordValueRepository.deleteWordValueById(wordValue.getId());
+        }
+    }
+
+    public void setRepository(){
+        currentWordValues = new ArrayList<>(wordValueRepository.findAll());
+    }
+
+    public Integer getMinWordValueCount(){
+        int trCount = (int) currentWordValues
+                .stream()
+                .filter(x -> x.getLanguage().equals("TR"))
+                .map(x -> x.getValue())
+                .count();
+
+        int enCount =  (int) currentWordValues
+                .stream()
+                .filter(x -> x.getLanguage().equals("EN"))
+                .map(x -> x.getValue())
+                .count();
+
+        return Math.min(trCount,enCount);
     }
 }
