@@ -2,11 +2,20 @@ package com.wordmemoriser.WordMeaning;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordmemoriser.Word.Word;
-import com.wordmemoriser.WordValue.WordValue;
-import lombok.*;
-
-import javax.persistence.*;
-import java.util.*;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import javax.persistence.Id;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToMany;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,8 +55,9 @@ public class WordMeaning {
 
     @OneToMany(
             targetEntity = com.wordmemoriser.Word.Word.class,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
+            orphanRemoval = true,
             mappedBy = "wordMeaning"
     )
     @Getter
