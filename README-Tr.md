@@ -2,8 +2,7 @@
 
 [Türkçe](https://github.com/ksavas/IddaAnalyser/edit/master/README.md)
 
-WordMemoriser is a web application which is being developed in order to improve english vocabulary. This appllication is still being developed, but the application 
-provides the core needs at the moment, so it can be used.
+WordMemoriser ingilizce kelime bilgisini geliştirmek için geliştirilen bir web uygulamasıdır. Uygulama şu anda hala geliştiriliyor, ancak uygulama şu anda kök ihtiyaçları karşılayabildiği için kullanılabilir durumdadır.
 
 The server side is being developed with jdk 14.0.1 and Spring 2.3.1.RELEASE for developing, Apache Maven 3.6.3 for deploying and Mysql 8.0.20 for database.
 If you want to use that application you need JRE 14.0.1 at least. (If you want to use that application please contact with me)
@@ -30,6 +29,7 @@ WordMemoriser is a web application in order to improve english vocabulary. The u
   - The Turkish Meaning of the Word.
   - The English Meaning of the Word.
   - The Word Type of The Word (e.g. noun, verb, adverb etc.)
+- The figure below shows the AddWord page:
 <img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/AddWord.png"><br>
 
 
@@ -51,7 +51,14 @@ WordMemoriser is a web application in order to improve english vocabulary. The u
   - For example, the user might think the words which have more than 20 points are learnt words and the user can say "I want to be examed for words which have most 20 points".
   - Or the user might want to improve the words which the user couldn't learn and the user can say "I want to be examed for the words which have most 0 points" which means the 
     user wants to be examed for the words which the user haven't answered corretly yet.
-    
+- The figure below shows the exam page
+<img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/Exam.png"><br>
+- The figure below shows what happens when the user selects the correct answer
+<img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/ExamTrueAnswer.png"><br>
+- The figure below shows what happens when the user selects the wrong answer
+<img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/ExamFalseAnswer.png"><br>
+
 ### Results
 - The user can see the words with meanings, examples and points and the user also can delete the words from the Results page.
-- 
+- The figure below shows the Results page
+<img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/Results.png"><br>
