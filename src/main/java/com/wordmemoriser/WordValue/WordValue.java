@@ -1,11 +1,21 @@
 package com.wordmemoriser.WordValue;
-import ch.qos.logback.classic.db.names.TableName;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordmemoriser.Word.Word;
-import lombok.*;
-
-import javax.persistence.*;
-import java.util.*;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import java.util.Set;
 
 @Builder
 @Entity(name = "word_values")
@@ -62,6 +72,7 @@ public class WordValue {
     public void addTrMeantWord(Word word){
         this.trMeantWords.add(word);
     }
+
     public void addEnMeantWord(Word word){
         this.enMeantWords.add(word);
     }
