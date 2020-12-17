@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<title>Word Memoriser</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/main.css">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script> 
+
+$(document).ready(function() {
+	getWordPoints();
+});
+
+function httpGet()
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", "http://localhost:9090/word", false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+
+function deleteWord(id){
+	$.ajax({
+     url : 'http://localhost:9090/word',
+     method : 'delete',
+	 async: false,
+     data : {
+        id :id
+     }
+	});
+	getWordPoints();
+}
+
+function getWordPoints(){
+	setTableHeaders();		
+	setTableElements();
+}
+
+function setTableHeaders(){
+	$("#resultTable").empty(); 
+	var el = $('<tr style="text-align:center"><td colspan="7"><label id="resultHol" name="holder" style="font-weight: bold;  font-size: 20px;" class="wordMem-bar-item">Words</label></td></tr>');
+	$("#resultTable").append(el);  
+	var el = $('<tr style="text-align:center"><td><label id="resultHol" name="holder" style="font-weight: bold; font-size: 17px; width:200px;" class="wordMem-bar-item">Word Type</label></td><td><label id="resultHol" name="holder" style="font-weight: bold; font-size: 17px;" class="wordMem-bar-item">Tr Word</label></td><td><label id="resultHol" name="holder" style="font-weight: bold; font-size: 17px;" class="wordMem-bar-item">En Word</label></td><td><label id="resultHol" name="holder" style="font-weight: bold; font-size: 17px;" class="wordMem-bar-item">Tr Meaning</label></td><td><label id="resultHol" name="holder" style="font-weight: bold; font-size: 17px;" class="wordMem-bar-item">En Meaning</label></td><td><label id="resultHol" name="holder" style="font-weight: bold; font-size: 17px;" class="wordMem-bar-item">Point</label></td><td><label id="resultHol" name="holder" style="font-weight: bold; font-size: 17px;" class="wordMem-bar-item">Delete</label></td></tr>');
+	$("#resultTable").append(el);  
+}
+
+function setTableElements(){
+	var responseText = httpGet();
+	var jsonTest = JSON.parse(responseText);
+	for (var i = 0; i < jsonTest.length; i++){
+		var el = $('<tr style="text-align:center"><td><label id="resultHol" name="holder"  style="margin:0 150px 0 150px 0 ;" class="wordMem-bar-item">' + jsonTest[i]["wordType"] + '</label></td><td><label id="resultHol" name="holder" class="wordMem-bar-item">' + jsonTest[i]["trWordValue"] + '</label></td><td><label id="resultHol" name="holder" class="wordMem-bar-item">' + jsonTest[i]["enWordValue"] + '</label></td><td><label id="resultHol" name="holder" class="wordMem-bar-item">' + jsonTest[i]["trMeaning"] + '</label></td><td><label id="resultHol" name="holder" class="wordMem-bar-item">' + jsonTest[i]["enMeaning"] + '</label></td><td><label id="resultHol" name="holder" class="wordMem-bar-item">' + jsonTest[i]["point"] + '</label></td><td><button id="' + jsonTest[i]["id"] + '" class="wordMem-button wordMem-light-grey " onclick="deleteWord(this.id);">Delete</button></td></tr>');
+		$("#resultTable").append(el);  
+	}
+}
+
+</script>
+</head>
+<body>
+<div>
+  <div class="wordMem-bar wordMem-padding" style="letter-spacing:4px;">
+	<label class="wordMem-bar-item">Word Memoriser - Results</label>
+    <div class="wordMem-right">
+	  <button id="btnAddWord" type="button" class="wordMem-bar-item wordMem-button"  onclick="location.href='AddWord.html';">Add Word</button>
+	  <button id="btnExam" type="button" class="wordMem-bar-item wordMem-button" onclick="location.href='Exam.html';">Exam</button>
+	  <button id="btnResult" type="button" class="wordMem-bar-item wordMem-button" onclick="location.href='Results.html';">Results</button>
+    </div>
+  </div>
+</div>
+<div id="examHolder" class="wordMem-card" style="margin-top:2%; margin-left:0%; height:100%; text-align: center; display: inline-block; border:0px solid black;">
+	<table id="resultTable" border="0" style="margin: 10 auto; "></table>
+</div>
+</body>
+</html>
