@@ -1,8 +1,10 @@
 package com.wordmemoriser.Word;
 
-import com.wordmemoriser.WordValue.WordValue;
-import lombok.*;
-
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.Builder;
 import java.util.List;
 
 @Data
@@ -19,10 +21,6 @@ public class WordResponse {
     private int id;
 
     private List<String> wordValues;
-
-    public void  addWordValues(String wordValue){
-        this.wordValues.add(wordValue);
-    }
 
     private String example;
 }
