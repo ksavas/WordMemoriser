@@ -1,6 +1,6 @@
 # WordMemoriser
 
-[Türkçe](https://github.com/ksavas/IddaAnalyser/edit/master/README.md)
+[English](https://github.com/ksavas/WordMemoriser/blob/master/README.md)
 
 WordMemoriser ingilizce kelime bilgisini geliştirmek için geliştirilen bir web uygulamasıdır. Uygulama şu anda hala geliştiriliyor, ancak uygulama şu anda kök ihtiyaçları karşılayabildiği için kullanılabilir durumdadır.
 
