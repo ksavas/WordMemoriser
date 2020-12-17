@@ -30,6 +30,7 @@ WordMemoriser is a web application in order to improve english vocabulary. The u
   - The Turkish Meaning of the Word.
   - The English Meaning of the Word.
   - The Word Type of The Word (e.g. noun, verb, adverb etc.)
+- The figure below shows the AddWord page:
 <img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/AddWord.png"><br>
 
 
@@ -51,7 +52,14 @@ WordMemoriser is a web application in order to improve english vocabulary. The u
   - For example, the user might think the words which have more than 20 points are learnt words and the user can say "I want to be examed for words which have most 20 points".
   - Or the user might want to improve the words which the user couldn't learn and the user can say "I want to be examed for the words which have most 0 points" which means the 
     user wants to be examed for the words which the user haven't answered corretly yet.
-    
+- The figure below shows the exam page
+<img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/Exam.png"><br>
+- The figure below shows what happens when the user selects the correct answer
+<img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/ExamTrueAnswer.png"><br>
+- The figure below shows what happens when the user selects the wrong answer
+<img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/ExamFalseAnswer.png"><br>
+
 ### Results
 - The user can see the words with meanings, examples and points and the user also can delete the words from the Results page.
-- 
+- The figure below shows the Results page
+<img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/Results.png"><br>
