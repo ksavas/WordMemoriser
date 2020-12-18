@@ -34,7 +34,7 @@ WordMemoriser kelime dağarcığını geliştirmek için kullanılan bir web uyg
 <img src="https://github.com/ksavas/WordMemoriser/blob/master/SS/AddWord.png"><br>
 
 
-### Sıav
+### Sınav
 - Eğer uygulama yeterince kelimeyle dolduysa (En az 5 Kelime) kullanıcı kendini yeni kelimelerle test edebilir.
 - Testler 6 farklı şekilde yapılır ve dillere göre 2'ye ayrılır:
   - Türkçe'den İngilizceye
