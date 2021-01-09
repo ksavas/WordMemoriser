@@ -24,4 +24,10 @@ public class ExamRequestTemplate {
 
     public int upperLimit;
 
+    public String toString(){
+        return "{ QuestionType: " + questionType + ", AnswerType: " + answerType
+                + ", Language: " + language + ", LowerLimit: " + lowerLimit
+                + ", UpperLimit: " + upperLimit + " }";
+    }
+
 }

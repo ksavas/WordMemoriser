@@ -1,5 +1,8 @@
 package com.wordmemoriser.WordValue;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -9,6 +12,8 @@ import java.util.ArrayList;
 
 @Service
 public class WordValueService {
+
+    Logger logger = LogManager.getLogger(WordValueService.class);
 
     @Autowired
     private WordValueRepository wordValueRepository;
@@ -79,6 +84,8 @@ public class WordValueService {
 
     public void setRepository(){
         currentWordValues = new ArrayList<>(wordValueRepository.findAll());
+        logger.log(Level.getLevel("INTERNAL"),"[setRepository] " + "Current WordValues are retrieved from db, size: " + currentWordValues.size());
+        logger.log(Level.getLevel("DEEPER"),"[setRepository] Current WordValues = " + currentWordValues.toString());
     }
 
     public Integer getMinWordValueCount(){
@@ -93,6 +100,8 @@ public class WordValueService {
                 .filter(x -> x.getLanguage().equals("EN"))
                 .map(x -> x.getValue())
                 .count();
+
+        logger.log(Level.getLevel("INTERNAL"),"[getMinWordValueCount] " + " Current Turkish WordValue count = " + trCount + ", Current English WordValue count = " + enCount);
 
         return Math.min(trCount,enCount);
     }

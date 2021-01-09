@@ -77,4 +77,12 @@ public class WordValue {
         this.enMeantWords.add(word);
     }
 
+    @Override
+    public String toString(){
+        return "{ Id: " + getId()
+                + ", Value: " + getValue() + ", Language: " + getLanguage()
+                + ", Turkish Meant Words size: " + getTrMeantWords().size()
+                + ", English Meant Words size: " + getEnMeantWords().size() + " }";
+    }
+
 }

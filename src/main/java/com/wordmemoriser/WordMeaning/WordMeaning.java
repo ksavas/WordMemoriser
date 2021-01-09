@@ -70,4 +70,12 @@ public class WordMeaning {
         this.words.add(word);
     }
 
+    @Override
+    public String toString(){
+        return  "{ Id: " + getId()
+                + ", Turkish Meaning: " + getTurkishMeaning() + ", English Meaning: " + getEnglishMeaning()
+                + ", Words Size: " + getWords().size() + " }";
+
+    }
+
 }

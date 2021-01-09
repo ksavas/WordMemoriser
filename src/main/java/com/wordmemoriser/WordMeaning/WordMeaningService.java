@@ -1,6 +1,9 @@
 package com.wordmemoriser.WordMeaning;
 
 import com.wordmemoriser.Word.WordRequestTemplate;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -13,6 +16,8 @@ public class WordMeaningService {
 
     @Autowired
     WordMeaningRepository wordMeaningRepository;
+
+    Logger logger = LogManager.getLogger(WordMeaningService.class);
 
     private List<WordMeaning> currentWordMeanings;
 
@@ -78,6 +83,8 @@ public class WordMeaningService {
 
     public void setRepository(){
         currentWordMeanings = new ArrayList<>(wordMeaningRepository.findAll());
+        logger.log(Level.getLevel("INTERNAL"),"[setRepository] " + "Current WordMeanings are retrieved from db, size: " + currentWordMeanings.size());
+        logger.log(Level.getLevel("DEEPER"),"[setRepository] Current WordMeanings = " + currentWordMeanings.toString());
     }
 
     public Integer getMinWordMeaningCount(){
@@ -90,6 +97,8 @@ public class WordMeaningService {
                 .stream()
                 .map(x -> x.getEnglishMeaning())
                 .count();
+
+        logger.log(Level.getLevel("INTERNAL"),"[getMinWordMeaningCount] " + " Current Turkish WordMeaning count = " + trCount + ", Current English WordMeaning count = " + enCount);
 
         return Math.min(trCount, enCount);
     }

@@ -7,6 +7,9 @@ import com.wordmemoriser.WordMeaning.WordMeaningService;
 import com.wordmemoriser.WordValue.WordValue;
 import com.wordmemoriser.WordValue.WordValueHolder;
 import com.wordmemoriser.WordValue.WordValueService;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +35,8 @@ public class WordService {
     @Autowired
     private WordMeaningService wordMeaningService;
 
+    Logger logger = LogManager.getLogger(WordService.class);
+
     public Boolean updateWordPoint(Integer wordId, Integer point){
         Optional<Word> _word = wordRespository
                 .findAll()
@@ -40,6 +45,7 @@ public class WordService {
                 .findFirst();
         if(_word.isPresent()){
             Word word = _word.get();
+            logger.log(Level.getLevel("INTERNAL"),"[updateWordPoint] The word has been found in db, word: " + word);
             word.setPoint(point);
             wordRespository.save(word);
             return true;
@@ -209,10 +215,17 @@ public class WordService {
     }
 
     public List<String> generateFalseOptions(Word word, Language answerLanguage, ExamType answerType){
+        logger.log(Level.getLevel("DEEPER"),"[generateFalseOptions] Entered generateFalseOptions with values: ");
+        logger.log(Level.getLevel("DEEPER"),"- Word: " + word.toString());
+        logger.log(Level.getLevel("DEEPER"),"- Answer Language: " + answerLanguage);
+        logger.log(Level.getLevel("DEEPER"),"- Answer Type: " + answerType);
+
         HashSet<String> returnValue;
         HashSet<Integer> wordIds  = new HashSet<>(word.getTrWordValue().getTrMeantWords().stream().map(x -> x.getId()).collect(Collectors.toList()));
         wordIds.addAll(word.getEnWordValue().getEnMeantWords().stream().map(x -> x.getId()).collect(Collectors.toList()));
         wordIds.addAll(word.getWordMeaning().getWords().stream().map(x -> x.getId()).collect(Collectors.toList()));
+
+        logger.log(Level.getLevel("DEEPER"),"[generateFalseOptions] Elected WordIds: " + wordIds.toString());
 
         if(answerType.equals(ExamType.WORD)){
             if(answerLanguage.equals(Language.TR)){
