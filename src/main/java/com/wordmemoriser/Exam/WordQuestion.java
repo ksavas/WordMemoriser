@@ -38,7 +38,7 @@ public class WordQuestion {
 
     public void addOption(String question, boolean isCorrect){
         options.put(question,isCorrect);
-        logger.log(Level.getLevel("DEEPER"),"[addOption] New Option was added: Question = " + question + ", isCorrect = " + isCorrect);
+        logger.log(Level.getLevel("DEEPER"),"[addOption] New Option was added: Question: " + question + ", isCorrect: " + isCorrect);
         logger.log(Level.getLevel("DEEPER"),"[addOption] New elements of HashMap 'options' : [" + optionstoString() + "]");
     }
 

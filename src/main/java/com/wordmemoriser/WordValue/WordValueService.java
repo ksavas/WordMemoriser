@@ -85,7 +85,7 @@ public class WordValueService {
     public void setRepository(){
         currentWordValues = new ArrayList<>(wordValueRepository.findAll());
         logger.log(Level.getLevel("INTERNAL"),"[setRepository] " + "Current WordValues are retrieved from db, size: " + currentWordValues.size());
-        logger.log(Level.getLevel("DEEPER"),"[setRepository] Current WordValues = " + currentWordValues.toString());
+        logger.log(Level.getLevel("DEEPER"),"[setRepository] Current WordValues: " + currentWordValues.toString());
     }
 
     public Integer getMinWordValueCount(){
@@ -101,7 +101,7 @@ public class WordValueService {
                 .map(x -> x.getValue())
                 .count();
 
-        logger.log(Level.getLevel("INTERNAL"),"[getMinWordValueCount] " + " Current Turkish WordValue count = " + trCount + ", Current English WordValue count = " + enCount);
+        logger.log(Level.getLevel("INTERNAL"),"[getMinWordValueCount] " + " Current Turkish WordValue count: " + trCount + ", Current English WordValue count: " + enCount);
 
         return Math.min(trCount,enCount);
     }

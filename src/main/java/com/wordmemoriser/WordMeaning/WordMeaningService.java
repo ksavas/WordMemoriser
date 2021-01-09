@@ -84,7 +84,7 @@ public class WordMeaningService {
     public void setRepository(){
         currentWordMeanings = new ArrayList<>(wordMeaningRepository.findAll());
         logger.log(Level.getLevel("INTERNAL"),"[setRepository] " + "Current WordMeanings are retrieved from db, size: " + currentWordMeanings.size());
-        logger.log(Level.getLevel("DEEPER"),"[setRepository] Current WordMeanings = " + currentWordMeanings.toString());
+        logger.log(Level.getLevel("DEEPER"),"[setRepository] Current WordMeanings: " + currentWordMeanings.toString());
     }
 
     public Integer getMinWordMeaningCount(){
@@ -98,7 +98,7 @@ public class WordMeaningService {
                 .map(x -> x.getEnglishMeaning())
                 .count();
 
-        logger.log(Level.getLevel("INTERNAL"),"[getMinWordMeaningCount] " + " Current Turkish WordMeaning count = " + trCount + ", Current English WordMeaning count = " + enCount);
+        logger.log(Level.getLevel("INTERNAL"),"[getMinWordMeaningCount] " + " Current Turkish WordMeaning count: " + trCount + ", Current English WordMeaning count: " + enCount);
 
         return Math.min(trCount, enCount);
     }

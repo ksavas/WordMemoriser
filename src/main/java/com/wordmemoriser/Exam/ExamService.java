@@ -34,7 +34,7 @@ public class ExamService {
 
     public HttpStatus updateWordPoint(Integer wordId, Integer point){
         logger.info("[updateWordPoint] Request Received.");
-        logger.log(Level.getLevel("INTERNAL"),"[updateWordPoint] wordId = " + wordId + ", point: " + point);
+        logger.log(Level.getLevel("INTERNAL"),"[updateWordPoint] wordId: " + wordId + ", point: " + point);
 
         Boolean updateResult = wordService.updateWordPoint(wordId, point);
         logger.info("[updateWordPoint] Update Result is: " + updateResult);
@@ -43,7 +43,7 @@ public class ExamService {
 
     public ResponseEntity<List<WordQuestion>> getQuestionWords(ExamRequestTemplate examRequestTemplate){
         logger.info("[getQuestionWords] Request Received.");
-        logger.log(Level.getLevel("INTERNAL"),"[getQuestionWords] ExamRequestTemplate = " + examRequestTemplate.toString());
+        logger.log(Level.getLevel("INTERNAL"),"[getQuestionWords] ExamRequestTemplate: " + examRequestTemplate.toString());
 
         relatedRepositoryControls();
         if(countControls()){
@@ -76,7 +76,7 @@ public class ExamService {
         int minWordMeaningCount = wordMeaningService.getMinWordMeaningCount();
         if(Math.min(minWordValueCount, minWordMeaningCount) < 5){
             logger.warn("[countControls] minWordValueCount or minWordMeaningCount is less than 5, returning false.");
-            logger.warn("[countControls] minWordValueCount = " + minWordValueCount + ", minWordMeaningCount = " +minWordMeaningCount);
+            logger.warn("[countControls] minWordValueCount: " + minWordValueCount + ", minWordMeaningCount: " +minWordMeaningCount);
             return false;
         }
         logger.log(Level.getLevel("INTERNAL"),"[countControls] Counts are higher than 5, returning true.");
