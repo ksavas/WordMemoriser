@@ -1,6 +1,6 @@
 package com.wordmemoriser.WordMeaning;
 
-import com.wordmemoriser.Word.WordRequestTemplate;
+import com.wordmemoriser.Word.WordTemplate;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +21,7 @@ public class WordMeaningService {
 
     private List<WordMeaning> currentWordMeanings;
 
-    public WordMeaningHolder checkWordMeaning(WordRequestTemplate wordRequestTemplate){
+    public WordMeaningHolder checkWordMeaning(WordTemplate wordRequestTemplate){
 
         String checkedTurkishMeaning = wordRequestTemplate.trMeaning
                 .replace(" ","")

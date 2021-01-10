@@ -53,13 +53,13 @@ public class WordService {
         return false;
     }
 
-    public ResponseEntity<List<WordPointTemplate>> getAllWords(){
+    public ResponseEntity<List<WordTemplate>> getAllWords(){
         return new ResponseEntity<>(generateWordPointTemplates(wordRespository.findAll()), HttpStatus.OK);
     }
-    private List<WordPointTemplate> generateWordPointTemplates(List<Word> words){
-        List<WordPointTemplate> wordPointTemplates = new ArrayList<>();
+    private List<WordTemplate> generateWordPointTemplates(List<Word> words){
+        List<WordTemplate> wordPointTemplates = new ArrayList<>();
         for (Word word:words) {
-            wordPointTemplates.add(WordPointTemplate
+            wordPointTemplates.add(WordTemplate
                     .builder()
                     .id(word.getId())
                     .trWordValue(word.getTrWordValue().getValue())
@@ -104,7 +104,11 @@ public class WordService {
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<List<WordTemplate>> saveWordIfNotExist(WordRequestTemplate wordRequestTemplate){
+    public ResponseEntity<List<WordTemplate>> saveWordIfNotExist(WordTemplate wordRequestTemplate){
+
+        logger.info("[saveWordIfNotExist] Request received.");
+
+        logger.log(Level.getLevel("INTERNAL"),"[getQuestionWords] WordRequestTemplate: " + wordRequestTemplate.toString());
 
         WordValueHolder wordValueHolder = wordValueControls(wordRequestTemplate.trWordValue,wordRequestTemplate.enWordValue);
 
@@ -139,7 +143,7 @@ public class WordService {
 
         return wordRespository.findAllById(intersectedWordIds);
     }
-    private WordMeaningHolder wordMeaningControls(WordRequestTemplate wordRequestTemplate){
+    private WordMeaningHolder wordMeaningControls(WordTemplate wordRequestTemplate){
         return wordMeaningService.checkWordMeaning(wordRequestTemplate);
     }
     private ResponseEntity<List<WordTemplate>> wordSaveControls(List<Word> intersectedWords, WordValueHolder wordValueHolder, WordMeaningHolder wordMeaningHolder, String wordType, Boolean isForceSave){

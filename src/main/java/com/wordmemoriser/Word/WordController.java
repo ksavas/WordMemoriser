@@ -18,12 +18,12 @@ public class WordController {
     private WordService wordService ;
 
     @PostMapping("/word")
-    public ResponseEntity<List<WordTemplate>> saveWord(@RequestBody WordRequestTemplate wordRequestTemplate){
+    public ResponseEntity<List<WordTemplate>> saveWord(@RequestBody WordTemplate wordRequestTemplate){
         return  wordService.saveWordIfNotExist(wordRequestTemplate);
     }
 
     @GetMapping("/word")
-    public ResponseEntity<List<WordPointTemplate>> getAllWords(){
+    public ResponseEntity<List<WordTemplate>> getAllWords(){
         return  wordService.getAllWords();
     }
 

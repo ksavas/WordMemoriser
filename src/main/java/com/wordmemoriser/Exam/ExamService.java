@@ -48,18 +48,18 @@ public class ExamService {
         relatedRepositoryControls();
         if(countControls()){
             List<WordQuestion> wordQuestions = generateQuestions(examRequestTemplate.questionType,examRequestTemplate.answerType,examRequestTemplate.language,examRequestTemplate.lowerLimit,examRequestTemplate.upperLimit);
-            logger.log(Level.getLevel("INTERNAL"),"[getQuestionWords] Created word Questions: " + wordQuestions.toString());
             if(wordQuestions != null){
+                logger.log(Level.getLevel("INTERNAL"),"[getQuestionWords] Created word Questions: " + wordQuestions.toString());
                 Collections.shuffle(wordQuestions);
                 return new ResponseEntity<>(wordQuestions, HttpStatus.OK);
             }
             else {
-                logger.warn("[getQuestionWords] Word Questions List is null, returning NOT_ACCEPTABLE");
+                logger.warn("[getQuestionWords] Word Questions List is null, returning HTTP 406: NOT_ACCEPTABLE");
                 return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
             }
         }
         else {
-            logger.warn("[getQuestionWords] Count Controls weren't passed, returning NOT_ACCEPTABLE");
+            logger.warn("[getQuestionWords] Count Controls weren't passed, returning HTTP 406: NOT_ACCEPTABLE");
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
@@ -87,7 +87,7 @@ public class ExamService {
         List<Word> words = wordService.getLimitedWords(lowerLimit,upperLimit);
         Language answerLanguage = askedLanguage.equals(Language.TR) ? Language.EN : Language.TR;
 
-        logger.log(Level.getLevel("INTERNAL"),"[generateQuestions Entered generateQuestions with values:");
+        logger.log(Level.getLevel("INTERNAL"),"[generateQuestions] Entered generateQuestions with values:");
         logger.log(Level.getLevel("INTERNAL"),"- Question Type: " + questionType);
         logger.log(Level.getLevel("INTERNAL"),"- Answer Type: " + answerType);
         logger.log(Level.getLevel("INTERNAL"),"- Asked Language: " + askedLanguage);

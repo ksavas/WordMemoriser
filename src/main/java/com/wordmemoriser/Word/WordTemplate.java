@@ -13,6 +13,8 @@ import lombok.ToString;
 @ToString
 public class WordTemplate {
 
+    public Integer id;
+
     public String trWordValue;
 
     public String enWordValue;
@@ -24,5 +26,13 @@ public class WordTemplate {
     public String example;
 
     public String wordType;
+
+    public Integer point;
+
+    public Boolean forceSave;
+
+    public Boolean isForceSave(){
+        return forceSave;
+    }
 
 }
