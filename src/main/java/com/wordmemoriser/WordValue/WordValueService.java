@@ -23,16 +23,23 @@ public class WordValueService {
 
     List<WordValue> currentWordValues;
 
-    public WordValueHolder SaveWordValuesIfNotExist(String trWordValue, String enWordValue){
+    public WordValueHolder checkWordValues(String trWordValue, String enWordValue){
+
+        logger.log(Level.getLevel("INTERNAL"),"[SaveWordValuesIfNotExist] Entered SaveWordValuesIfNotExist with values:");
+        logger.log(Level.getLevel("INTERNAL"),"- trWordValue: " + trWordValue);
+        logger.log(Level.getLevel("INTERNAL"),"- enWordValue: " + enWordValue);
+
         String checkedTrValue = getCheckedWordValue(trWordValue);
         String checkedEnValue = getCheckedWordValue(enWordValue);
+        logger.log(Level.getLevel("DEEPER"),"[SaveWordValuesIfNotExist] checkedTrValue: " + checkedTrValue + ", checkedEnValue: " + checkedEnValue);
 
-        saveWordValueIfNotExist(trWordValue,"TR",checkedTrValue);
-        saveWordValueIfNotExist(enWordValue,"EN",checkedEnValue);
+        checkWordValue(trWordValue,"TR",checkedTrValue);
+        checkWordValue(enWordValue,"EN",checkedEnValue);
+
+        logger.log(Level.getLevel("INTERNAL"),"[SaveWordValuesIfNotExist] wordValueHolder is filled with new WordValues: " + wordValueHolder.toString());
 
         return wordValueHolder;
     }
-
     private String getCheckedWordValue(String rawWordValue){
         return rawWordValue
                 .replace(" ","")
@@ -40,7 +47,7 @@ public class WordValueService {
                 .trim();
     }
 
-    private void saveWordValueIfNotExist(String wordValue, String language, String checkedWordValue){
+    private void checkWordValue(String wordValue, String language, String checkedWordValue){
 
         WordValue currentWordValue;
         boolean isExist;
@@ -54,6 +61,7 @@ public class WordValueService {
         if(optionalWordValue.isPresent()){
             currentWordValue = optionalWordValue.get();
             isExist = true;
+            logger.log(Level.getLevel("INTERNAL"),"[saveWordValueIfNotExist] The WordValue exists in the db, WordValue: " + currentWordValue.toString());
         }
         else {
             currentWordValue = WordValue
@@ -67,18 +75,29 @@ public class WordValueService {
 
             isExist=false;
 
-            wordValueRepository.save(currentWordValue);
+            logger.log(Level.getLevel("INTERNAL"),"[saveWordValueIfNotExist] The WordValue doesn't exist in the db so it's going to be stored to db, WordValue: " + currentWordValue.toString());
         }
 
         wordValueHolder.setWordValue(currentWordValue,isExist);
     }
 
+    public WordValue saveWordValue(WordValue wordValue){
+       return wordValueRepository.save(wordValue);
+    }
+
     public void deleteWordValueIfChildless(WordValue wordValue){
         if(wordValue.getLanguage().equalsIgnoreCase("TR") && wordValue.getTrMeantWords().size() == 1 && wordValue.getEnMeantWords().size() == 0){
             wordValueRepository.deleteWordValueById(wordValue.getId());
+            logger.log(Level.getLevel("INTERNAL"),"[deleteWordValueIfChildless] The Word Value has no other children, so it was deleted from db successfully, " +
+                    "Word Value: " + wordValue.toString());
         }
         else if (wordValue.getLanguage().equalsIgnoreCase("EN") && wordValue.getEnMeantWords().size() == 1 && wordValue.getTrMeantWords().size() == 0){
             wordValueRepository.deleteWordValueById(wordValue.getId());
+            logger.log(Level.getLevel("INTERNAL"),"[deleteWordValueIfChildless] The Word Value has no other children, so it was deleted from db successfully, " +
+                    "Word Value: " + wordValue.toString());
+        }
+        else {
+            logger.warn("[deleteWordValueIfChildless] The Word Value has some other words so it couldn't be deleted from db, Word Value: " + wordValue.toString());
         }
     }
 

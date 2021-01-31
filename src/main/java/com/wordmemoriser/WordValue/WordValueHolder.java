@@ -34,4 +34,10 @@ public class WordValueHolder {
             this.enWordValueExisted=wordValueExists;
         }
     }
+
+    @Override
+    public String toString(){
+        return "{ trWordValue: " + trWordValue.toString() + ", isExisted: " + trWordValueExisted
+                + " }, { " + "enWordValue: " + enWordValue.toString() +", isExisted: " + enWordValueExisted +" }";
+    }
 }

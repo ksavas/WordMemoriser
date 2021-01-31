@@ -75,6 +75,7 @@ public class WordService {
 
     public ResponseEntity<List<WordTemplate>> deleteWord(String strId){
         try{
+            logger.info("[deleteWord] Request Received. Word Id: " + strId);
             Integer wordId = Integer.parseInt(strId);
             Optional<Word> optionalWord = wordRespository
                     .findAll()
@@ -88,12 +89,22 @@ public class WordService {
                 WordValue enWordValue = word.getEnWordValue();
                 WordMeaning wordMeaning = word.getWordMeaning();
 
+                logger.log(Level.getLevel("INTERNAL"),"[deleteWord] The Word exists in db, Values:");
+                logger.log(Level.getLevel("INTERNAL"),"- Word: " + word.toString());
+                logger.log(Level.getLevel("INTERNAL"),"- Tr Word Value: " + trWordValue.toString());
+                logger.log(Level.getLevel("INTERNAL"),"- En Word Value: " + enWordValue.toString());
+                logger.log(Level.getLevel("INTERNAL"),"- Word Meaning: " + wordMeaning.toString());
+
                 wordRespository.deleteWordById(word.getId());
                 wordValueService.deleteWordValueIfChildless(trWordValue);
                 wordValueService.deleteWordValueIfChildless(enWordValue);
                 wordMeaningService.deleteWordMeaningIfChildless(wordMeaning);
 
+                logger.info("[deleteWord] The word and related WordValue and WordMeanings have been deleted from db successfully");
+
                 List<WordTemplate> resultWordTemplates = generateWordTemplates(wordRespository.findAll());
+
+                logger.log(Level.getLevel("DEEPER"),"New Word Values after delete: " + resultWordTemplates.toString());
 
                 return new ResponseEntity<>(resultWordTemplates, HttpStatus.OK);
             }
@@ -112,44 +123,72 @@ public class WordService {
 
         WordValueHolder wordValueHolder = wordValueControls(wordRequestTemplate.trWordValue,wordRequestTemplate.enWordValue);
 
-        List<Word> intersectedWords = getIntersectedWordIds(wordValueHolder.getTrWordValue(),wordValueHolder.getEnWordValue());
+        List<Word> intersectedWords = getIntersectedWordIds(wordValueHolder);
+        logger.log(Level.getLevel("DEEPER"),"[getQuestionWords] intersectedWords: " + intersectedWords.toString());
 
         WordMeaningHolder wordMeaningHolder = wordMeaningControls(wordRequestTemplate);
+        logger.log(Level.getLevel("DEEPER"),"[getQuestionWords] wordMeaningHolder: " + wordMeaningHolder.toString());
 
         return wordSaveControls(intersectedWords,wordValueHolder,wordMeaningHolder,wordRequestTemplate.wordType,wordRequestTemplate.isForceSave());
     }
     private WordValueHolder wordValueControls(String trWordValue, String enWordValue){
-        return wordValueService.SaveWordValuesIfNotExist(trWordValue,enWordValue);
+        return wordValueService.checkWordValues(trWordValue,enWordValue);
     }
-    private List<Word> getIntersectedWordIds(WordValue trWordValue, WordValue enWordValue){
+    private List<Word> getIntersectedWordIds(WordValueHolder wordValueHolder){
 
-        Set<Integer> trWordValueIds = trWordValue
-                .getTrMeantWords()
-                .stream()
-                .map(word -> word.getId())
-                .collect(Collectors.toSet());
+        logger.log(Level.getLevel("INTERNAL"),"[getIntersectedWordIds] Entered getIntersectedWordIds with Values:");
+        logger.log(Level.getLevel("INTERNAL"),"- trWordValue: " + wordValueHolder.getTrWordValue());
+        logger.log(Level.getLevel("INTERNAL"),"- isTrWordValueExisted: " + wordValueHolder.isTrWordValueExisted());
+        logger.log(Level.getLevel("INTERNAL"),"- enWordValue: " + wordValueHolder.getEnWordValue());
+        logger.log(Level.getLevel("INTERNAL"),"- isEnWordValueExisted: " + wordValueHolder.isEnWordValueExisted());
 
-        Set<Integer> enWordValueIds =  enWordValue
-                .getEnMeantWords()
-                .stream()
-                .map(word -> word.getId())
-                .collect(Collectors.toSet());
+        if(wordValueHolder.isTrWordValueExisted() && wordValueHolder.isEnWordValueExisted()){
+            Set<Integer> trWordValueIds = wordValueHolder.getTrWordValue()
+                    .getTrMeantWords()
+                    .stream()
+                    .map(word -> word.getId())
+                    .collect(Collectors.toSet());
 
-        Set<Integer> intersectedWordIds = trWordValueIds
-                .stream()
-                .distinct()
-                .filter(enWordValueIds::contains)
-                .collect(Collectors.toSet());
+            logger.log(Level.getLevel("DEEPER"),"[getIntersectedWordIds] trWordValueIds: " + trWordValueIds.toString());
 
-        return wordRespository.findAllById(intersectedWordIds);
+            Set<Integer> enWordValueIds =  wordValueHolder.getEnWordValue()
+                    .getEnMeantWords()
+                    .stream()
+                    .map(word -> word.getId())
+                    .collect(Collectors.toSet());
+
+            logger.log(Level.getLevel("DEEPER"),"[getIntersectedWordIds] enWordValueIds: " + enWordValueIds.toString());
+
+            Set<Integer> intersectedWordIds = trWordValueIds
+                    .stream()
+                    .distinct()
+                    .filter(enWordValueIds::contains)
+                    .collect(Collectors.toSet());
+
+            logger.log(Level.getLevel("DEEPER"),"[getIntersectedWordIds] intersectedWordIds: " + intersectedWordIds.toString());
+            return wordRespository.findAllById(intersectedWordIds);
+        }
+        logger.log(Level.getLevel("INTERNAL"),"[getIntersectedWordIds] One of the Word Values or both of them not exist so returning empty list..");
+        return new ArrayList<>();
     }
     private WordMeaningHolder wordMeaningControls(WordTemplate wordRequestTemplate){
         return wordMeaningService.checkWordMeaning(wordRequestTemplate);
     }
     private ResponseEntity<List<WordTemplate>> wordSaveControls(List<Word> intersectedWords, WordValueHolder wordValueHolder, WordMeaningHolder wordMeaningHolder, String wordType, Boolean isForceSave){
+
+        logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Entered wordSaveControls with Values:");
+        logger.log(Level.getLevel("INTERNAL"),"- Intersected Words Size: " + intersectedWords.size());
+        logger.log(Level.getLevel("INTERNAL"),"- Intersected Words: " + intersectedWords.toString());
+        logger.log(Level.getLevel("INTERNAL"),"- WordValueHolder: " + wordValueHolder.toString());
+        logger.log(Level.getLevel("INTERNAL"),"- WordMeaningHolder: " + wordMeaningHolder.toString());
+        logger.log(Level.getLevel("INTERNAL"),"- Word Type: " + wordType);
+        logger.log(Level.getLevel("INTERNAL"),"- Force Save: " + isForceSave);
+
         if(wordValueHolder.isTrWordValueExisted() &&
            wordValueHolder.isEnWordValueExisted() &&
            intersectedWords.size()>0){
+
+            logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Some Words have same Word Values..");
 
             Optional<Word> optionalWord = wordRespository
                     .findAll()
@@ -161,17 +200,36 @@ public class WordService {
                     .findFirst();
 
             if(optionalWord.isPresent()){
-                List<Word> singleWord = Stream.of(optionalWord.get()).collect(Collectors.toList());
+                Word word = optionalWord.get();
+
+                logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] The Word exists in db with same Word Values, same " +
+                        "Word Meaning and same Word Type, so returning HTTP 403: Forbidden");
+                logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Existed Word: " + word.toString());
+
+                List<Word> singleWord = Stream.of(word).collect(Collectors.toList());
                 return new ResponseEntity<>(generateWordTemplates(singleWord), HttpStatus.FORBIDDEN);
             }
 
             if(!isForceSave){
                 List<WordTemplate> intersectedWordTemplates = generateWordTemplates(intersectedWords);
+
+                logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Similar words exist in db and forceSave: " + isForceSave + ", so returning HTTP 409: Conflict.");
+                logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Similar words: " + intersectedWords.toString());
+
                 return new ResponseEntity<>(intersectedWordTemplates, HttpStatus.CONFLICT);
             }
         }
         WordMeaning wordMeaning =  wordMeaningService.saveWordMeaning(wordMeaningHolder.getWordMeaning());
-        Word newWord = saveNewWord(wordValueHolder.getTrWordValue(),wordValueHolder.getEnWordValue(),wordMeaning,wordType);
+        WordValue trWordValue = wordValueService.saveWordValue(wordValueHolder.getTrWordValue());
+        WordValue enWordValue = wordValueService.saveWordValue(wordValueHolder.getEnWordValue());
+
+        logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Word Meaning has been stored to db, Word Meaning: " + wordMeaning.toString());
+        logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Tr Word Value has been stored to db, Word Value: " + trWordValue.toString());
+        logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] En Word Value has been stored to db, Word Value: " + enWordValue.toString());
+
+        Word newWord = saveNewWord(trWordValue,enWordValue,wordMeaning,wordType);
+
+        logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Word has been stored to db, Word: " + newWord.toString());
         List<Word> singleWord = Stream.of(newWord).collect(Collectors.toList());
         return new ResponseEntity<>(generateWordTemplates(singleWord), HttpStatus.OK);
     }
@@ -233,17 +291,21 @@ public class WordService {
 
         if(answerType.equals(ExamType.WORD)){
             if(answerLanguage.equals(Language.TR)){
+                logger.log(Level.getLevel("DEEPER"),"[generateFalseOptions] inside WORD - TR if block.");
                 returnValue = (HashSet<String>) wordRespository.findAll().stream().filter(x -> ! wordIds.contains(x.getId())).map(x -> x.getTrWordValue().getValue()).collect(Collectors.toSet());
             }
             else{
+                logger.log(Level.getLevel("DEEPER"),"[generateFalseOptions] inside WORD - EN if block.");
                 returnValue = (HashSet<String>) wordRespository.findAll().stream().filter(x -> !wordIds.contains(x.getId())).map(x -> x.getEnWordValue().getValue()).collect(Collectors.toSet());
             }
         }
         else {
             if(answerLanguage.equals(Language.TR)){
+                logger.log(Level.getLevel("DEEPER"),"[generateFalseOptions] inside MEANING - TR if block.");
                 returnValue = (HashSet<String>) wordRespository.findAll().stream().filter(x -> !wordIds.contains(x.getId())).map(x -> x.getWordMeaning().getTurkishMeaning()).collect(Collectors.toSet());
             }
             else{
+                logger.log(Level.getLevel("DEEPER"),"[generateFalseOptions] inside MEANING - EN if block.");
                 returnValue = (HashSet<String>) wordRespository.findAll().stream().filter(x -> !wordIds.contains(x.getId())).map(x -> x.getWordMeaning().getEnglishMeaning()).collect(Collectors.toSet());
             }
         }

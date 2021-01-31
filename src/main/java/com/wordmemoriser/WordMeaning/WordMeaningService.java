@@ -23,6 +23,8 @@ public class WordMeaningService {
 
     public WordMeaningHolder checkWordMeaning(WordTemplate wordRequestTemplate){
 
+        logger.log(Level.getLevel("INTERNAL"),"[checkWordMeaning] Entered checkWordMeaning, WordRequestTemplate: " + wordRequestTemplate.toString());
+
         String checkedTurkishMeaning = wordRequestTemplate.trMeaning
                 .replace(" ","")
                 .toLowerCase();
@@ -34,6 +36,9 @@ public class WordMeaningService {
         String checkedExample = wordRequestTemplate.example
                 .replace(" ","")
                 .toLowerCase();
+
+        logger.log(Level.getLevel("DEEPER"),"[checkWordMeaning] checkedTurkishMeaning: " + checkedTurkishMeaning + ", checkedEnglishMeaning: "
+                                                + checkedEnglishMeaning + ", checkedExample: " + checkedExample);
 
         Optional<WordMeaning> optionalWordMeaning = wordMeaningRepository
                 .findAll()
@@ -60,9 +65,15 @@ public class WordMeaningService {
                     .wordMeaning(newWordMeaning)
                     .isExist(false)
                     .build();
+
+            logger.log(Level.getLevel("INTERNAL"),"[checkWordMeaning] The WordMeaning doesn't exist in db, so it's going to be stored to db, new WordMeaning: " + newWordMeaning.toString());
             return wordMeaningHolder;
         }
         else {
+            WordMeaning _wordMeaning = optionalWordMeaning.get();
+
+            logger.log(Level.getLevel("INTERNAL"),"[checkWordMeaning] The WordMeaning exists in db: " + _wordMeaning.toString());
+
             return WordMeaningHolder
                     .builder()
                     .wordMeaning(optionalWordMeaning.get())
@@ -78,6 +89,11 @@ public class WordMeaningService {
     public void deleteWordMeaningIfChildless(WordMeaning wordMeaning){
         if(wordMeaning.getWords().size() == 1){
             wordMeaningRepository.deleteWordMeaningById(wordMeaning.getId());
+            logger.log(Level.getLevel("INTERNAL"),"[deleteWordMeaningIfChildless] The Word Meaning has no other children, so it was deleted from db successfully, " +
+                    "Word Meaning: " + wordMeaning.toString());
+        }
+        else {
+            logger.warn("[deleteWordMeaningIfChildless] The Word Meaning has some other words so it couldn't be deleted from db, Word Meaning: " + wordMeaning.toString());
         }
     }
 

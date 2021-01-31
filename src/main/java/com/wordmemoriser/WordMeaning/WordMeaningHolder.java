@@ -19,4 +19,9 @@ public class WordMeaningHolder {
 
     private Boolean isExist;
 
+    @Override
+    public String toString(){
+        return "[ " + wordMeaning.toString() + ", isExist: " + isExist + " ]";
+    }
+
 }
