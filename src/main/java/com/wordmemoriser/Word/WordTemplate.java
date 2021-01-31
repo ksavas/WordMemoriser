@@ -35,4 +35,11 @@ public class WordTemplate {
         return forceSave;
     }
 
+    @Override
+    public String toString(){
+        return "{ Id: " + id + ", trWordValue: " + trWordValue + ", enWordValue: " + enWordValue + ", trMeaning: " + trMeaning
+                + ", enMeaning: " + enMeaning + ", example: " + example + ", wordType: " + wordType + ", point: " + point
+                + ", forceSave: " + forceSave;
+    }
+
 }
