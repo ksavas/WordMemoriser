@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-EurekaServer/demo.iml" filepath="$PROJECT_DIR$/spring-word-memoriser-EurekaServer/demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-AccountService/demo (1) (com.wordmemoriser.accountservice).iml" filepath="$PROJECT_DIR$/spring-word-memoriser-AccountService/demo (1) (com.wordmemoriser.accountservice).iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-WordService/spring-word-memoriser.iml" filepath="$PROJECT_DIR$/spring-word-memoriser-WordService/spring-word-memoriser.iml" />
+    </modules>
+  </component>
+</project>
