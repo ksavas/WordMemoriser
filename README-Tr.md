@@ -2,9 +2,15 @@
 
 [English](https://github.com/ksavas/WordMemoriser/blob/master/README.md)
 
-WordMemoriser ingilizce kelime bilgisini geliştirmek için geliştirilen bir web uygulamasıdır. Uygulama şu anda hala geliştiriliyor, ancak uygulama şu anda kök ihtiyaçları karşılayabildiği için kullanılabilir durumdadır.
+WordMemoriser ingilizce kelime bilgisini geliştirmek için microservice mimarisinde geliştirilen bir web uygulamasıdır. Uygulama şu anda hala geliştiriliyor, ancak uygulama şu anda kök ihtiyaçları karşılayabildiği için kullanılabilir durumdadır.
 
 Uygulamanın sunucu tarafı java için jdk 14.0.1 ve Spring 2.3.1.RELEASE ile geiştirildi, uygulamayı paketlemek için Apache Maven 3.6.3 kullanıldı ve veritabanı için Mysql 8.0.20 kullanıldı.
+
+Şu anda uygulamada 2 microservice ve 1 adet eureka server bulunmaktadır:
+- Eureka Server: Microservice'leri yönetmek için.
+- Word Service (Eureka Client): Word ve test operasyonları için.
+- Account Service (Eureka Client): Kullanıcı ve kullanıcı bağlantılı word'ler için.
+
 Eğer uygulamayı kullanmak istiyorsanız bilgisayarınızda en az JRE 14.0.1 kurulu olmalıdır. (Eğer uygulamayı kullanmak isterseniz benimle iletişime geçebilirsiniz)
 
 Kullanıcı arayüzü (Web uygulaması) tarafı javascript ve jquery 3.5.1 ile geliştirildi.
