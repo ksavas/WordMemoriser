@@ -2,6 +2,7 @@ package com.wordmemoriser.Word;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordmemoriser.Exam.ExamType;
+import com.wordmemoriser.User.UserWordPoint;
 import com.wordmemoriser.WordMeaning.WordMeaning;
 import com.wordmemoriser.WordValue.WordValue;
 import lombok.NoArgsConstructor;
@@ -15,15 +16,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.ManyToOne;
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
+import javax.persistence.*;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -57,7 +51,7 @@ public class Word {
     @Setter
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JoinColumn(name = "tr_word_value_id")
+    @JoinColumn(name = "tr_word_value_id", referencedColumnName = "Id")
     @JsonIgnore
     private WordValue trWordValue;
 
@@ -66,7 +60,7 @@ public class Word {
     @Setter
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JoinColumn(name = "en_word_value_id")
+    @JoinColumn(name = "en_word_value_id", referencedColumnName = "Id")
     @JsonIgnore
     private WordValue enWordValue;
 
@@ -77,6 +71,19 @@ public class Word {
     @Getter
     @Setter
     private String wordType;
+
+    @OneToMany(
+            targetEntity = com.wordmemoriser.User.UserWordPoint.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER,
+            mappedBy = "word"
+    )
+    @Getter
+    @Setter
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<UserWordPoint> userWordPoints;
 
 
     public String getValue(ExamType examType, Language language){
@@ -97,16 +104,21 @@ public class Word {
         }
     }
 
-    public void setPoint(Integer point){
-        int oldVal = point;
-        this.point += point;
-        logger.log(Level.getLevel("INTERNAL"),"[setPoint] The word point is updated to: " + this.point + ", old Point: " + oldVal + ", added value: " + point);
+    public void setPoint(Integer userId, Integer point){
+        UserWordPoint userWordPoint = userWordPoints.stream().filter(x -> x.getUser().getId() == userId && x.getWord().getId() == this.getId()).findFirst().get(); // TODO make it more secure
+        int oldVal = userWordPoint.getPoint();
+        userWordPoint.setPoint(oldVal + point);
+        logger.log(Level.getLevel("INTERNAL"),"[setPoint] The word point is updated, values: " + " userId: " + userId + ", point: " + this.point + ", old Point: " + oldVal + ", added value: " + point);
     }
 
     public String toString(){
         return "{ Id: " + getId() + ", Tr Word Value: " + trWordValue.getValue() + ", En Word Value: " + enWordValue.getValue()
                 + ", Word Type: " + wordType + ", Turkish Word Meaning: " + wordMeaning.getTurkishMeaning()
                 + ", English Word Meaning: " + wordMeaning.getEnglishMeaning() + ", Point: " + point + " }";
+    }
+
+    public void addUserWordPoint(UserWordPoint userWordPoint){
+        this.userWordPoints.add(userWordPoint);
     }
 
 }

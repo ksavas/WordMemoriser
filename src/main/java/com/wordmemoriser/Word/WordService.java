@@ -1,6 +1,10 @@
 package com.wordmemoriser.Word;
 
 import com.wordmemoriser.Exam.ExamType;
+import com.wordmemoriser.User.User;
+import com.wordmemoriser.User.UserRepository;
+import com.wordmemoriser.User.UserWordPoint;
+import com.wordmemoriser.User.UserWordPointRepository;
 import com.wordmemoriser.WordMeaning.WordMeaning;
 import com.wordmemoriser.WordMeaning.WordMeaningHolder;
 import com.wordmemoriser.WordMeaning.WordMeaningService;
@@ -37,7 +41,7 @@ public class WordService {
 
     Logger logger = LogManager.getLogger(WordService.class);
 
-    public Boolean updateWordPoint(Integer wordId, Integer point){
+    public Boolean updateWordPoint(Integer userId, Integer wordId, Integer point){
         Optional<Word> _word = wordRespository
                 .findAll()
                 .stream()
@@ -46,14 +50,54 @@ public class WordService {
         if(_word.isPresent()){
             Word word = _word.get();
             logger.log(Level.getLevel("INTERNAL"),"[updateWordPoint] The word has been found in db, word: " + word);
-            word.setPoint(point);
+            word.setPoint(userId, point);
             wordRespository.save(word);
             return true;
         }
         return false;
     }
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    UserWordPointRepository userWordPointRepository;
+
     public ResponseEntity<List<WordTemplate>> getAllWords(){
+
+        User user = User
+                .builder()
+                .relatedId(2)
+                .userName("ksvs")
+                .userWordPoints(new HashSet<>())
+                .build();
+
+        userRepository.save(user);
+
+        List<Word> _words = wordRespository.findAll();
+
+        for (Word word: _words) {
+            word.setUserWordPoints(new HashSet<>());
+            wordRespository.save(word);
+            UserWordPoint userWordPoint = UserWordPoint.builder()
+                    .user(user)
+                    .word(word)
+                    .point(word.getPoint())
+                    .build();
+
+            userWordPointRepository.save(userWordPoint);
+        }
+
+        List<UserWordPoint> _userWordPoints = userWordPointRepository.findAll();
+
+        for (Word word: wordRespository.findAll()) {
+            HashSet<UserWordPoint> userWordPoints = (HashSet<UserWordPoint>) word.getUserWordPoints();
+            logger.info(userWordPoints.size());
+        }
+
+        User _user = userRepository.findAll().stream().filter(x -> x.getId() > 0).findFirst().get();
+        logger.info(_user.getUserWordPoints().size());
+
         return new ResponseEntity<>(generateWordPointTemplates(wordRespository.findAll()), HttpStatus.OK);
     }
     private List<WordTemplate> generateWordPointTemplates(List<Word> words){

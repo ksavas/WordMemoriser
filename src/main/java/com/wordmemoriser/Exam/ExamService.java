@@ -32,11 +32,11 @@ public class ExamService {
 
     static Logger logger = LogManager.getLogger(ExamService.class);
 
-    public HttpStatus updateWordPoint(Integer wordId, Integer point){
+    public HttpStatus updateWordPoint(Integer userId, Integer wordId, Integer point){//TODO test after new parameter: "Integer userId"
         logger.info("[updateWordPoint] Request Received.");
-        logger.log(Level.getLevel("INTERNAL"),"[updateWordPoint] wordId: " + wordId + ", point: " + point);
+        logger.log(Level.getLevel("INTERNAL"),"[updateWordPoint] userId:" + userId + ", wordId: " + wordId + ", point: " + point);
 
-        Boolean updateResult = wordService.updateWordPoint(wordId, point);
+        Boolean updateResult = wordService.updateWordPoint(userId, wordId, point);
         logger.info("[updateWordPoint] Update Result is: " + updateResult);
         return updateResult ? HttpStatus.OK : HttpStatus.NOT_ACCEPTABLE;
     }

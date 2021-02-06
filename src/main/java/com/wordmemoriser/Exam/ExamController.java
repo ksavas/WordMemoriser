@@ -22,8 +22,8 @@ public class ExamController {
     }
 
     @PutMapping("/exam")
-    public HttpStatus updateWordPoint(@RequestParam Integer wordId, Integer point){
-        return examService.updateWordPoint(wordId, point);
+    public HttpStatus updateWordPoint(@RequestParam Integer userId,@RequestParam Integer wordId,@RequestParam Integer point){
+        return examService.updateWordPoint(userId,wordId, point);
     }
 
 }
