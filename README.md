@@ -2,10 +2,16 @@
 
 [Türkçe](https://github.com/ksavas/WordMemoriser/blob/master/README-Tr.md)
 
-WordMemoriser is a web application which is being developed in order to improve english vocabulary. This appllication is still being developed, but the application 
+WordMemoriser is a web application that is being developed in microservices architecture in order to improve english vocabulary. This appllication is still being developed, but the application 
 provides the core needs at the moment, so it can be used.
 
-The server side is being developed with jdk 14.0.1 and Spring 2.3.1.RELEASE for developing, Apache Maven 3.6.3 for deploying and Mysql 8.0.20 for database.
+The technologies that is being used to develop Word Memoriser microservice; jdk 14.0.1 and Spring 2.3.1.RELEASE for code, Apache Maven 3.6.3 for deploying and Mysql 8.0.20 for database.
+
+There are 2 microservices and 1 eureka server in the application at the moment:
+- Eureka Server: For Managing microservices.
+- Word Service (Eureka Client): For word and test operations.
+- Account Service (Eureka Client): For account and account related word operations.
+
 If you want to use that application you need JRE 14.0.1 at least. (If you want to use that application please contact with me)
 
 The UI (Web App) part is developed with javascript and jquery 3.5.1.
