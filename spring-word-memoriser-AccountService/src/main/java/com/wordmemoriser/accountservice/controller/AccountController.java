@@ -14,9 +14,14 @@ public class AccountController {
     @Autowired
     AccountService accountService;
 
-    @GetMapping("/account")
-    public ResponseEntity<Account> getAccount(@RequestParam String nick, @RequestParam String password){
-        return accountService.checkAccount(nick,password);
+    @GetMapping("/signIn")
+    public ResponseEntity<Account> signIn(@RequestParam String nick, @RequestParam String password){
+        return accountService.signInControls(nick,password);
+    }
+
+    @GetMapping("/SignUp")
+    public ResponseEntity<Account> signUp(@RequestParam String nick, @RequestParam String password){
+        return accountService.signInControls(nick,password);
     }
 
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>Word Memoriser</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/main.css">
+<head>
+</head>
+
+<body>
+
+<br><br><br><br><br><br><br><br><br><br><br>
+<form style="margin-top:50px;" method="post" th:object="${account}" th:action="@{/}">
+<div  class="wordMem-content" style="max-width:1100px" >
+	<div id="addWordHolder" class="wordMem-container" style="margin: 0px 0;"> 
+		<h1 style="position:absolute; left:41%;">Word Memoriser</h1><br><br><br>
+			<p><input id="nick" th:field="${account.nick}" class="wordMem-input wordMem-padding-16" style="text-align:center;" type="text" placeholder="Nick" required name="Nick" ></p>
+			<p><input id="password" th:field="${account.password}" class="wordMem-input wordMem-padding-16" style="text-align:center;" type="password" placeholder="Password" required name="Password"></p>
+	</div>
+	<div>
+		<table border="0" style="table-layout:fixed; position:absolute; left:43%; width:250px;" >
+			<tr style="text-align:center; height:75px;">
+				<td><button type="submit" class="wordMem-button">Sign In</button></td>
+				<td><button type="button" class="wordMem-button" onclick="location.href='/signup';">Sign Up</button></td>
+			</tr>
+		</table>
+	</div>
+</div>
+</form>
+
+</body>
+</html>

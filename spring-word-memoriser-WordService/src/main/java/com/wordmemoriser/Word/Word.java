@@ -5,6 +5,7 @@ import com.wordmemoriser.Exam.ExamType;
 import com.wordmemoriser.User.UserWordPoint;
 import com.wordmemoriser.WordMeaning.WordMeaning;
 import com.wordmemoriser.WordValue.WordValue;
+import com.wordmemoriser.account.Account;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -85,6 +86,14 @@ public class Word {
     @JsonIgnore
     private Set<UserWordPoint> userWordPoints;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Getter
+    @Setter
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JoinColumn(name = "account_id", referencedColumnName = "Id")
+    @JsonIgnore
+    private Account account;
 
     public String getValue(ExamType examType, Language language){
         if(examType.equals(ExamType.WORD) && language.equals(Language.TR)){
