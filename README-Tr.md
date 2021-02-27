@@ -2,29 +2,46 @@
 
 [English](https://github.com/ksavas/WordMemoriser/blob/master/README.md)
 
-WordMemoriser ingilizce kelime bilgisini geliştirmek için microservice mimarisinde geliştirilen bir web uygulamasıdır. Uygulama şu anda hala geliştiriliyor, ancak uygulama şu anda kök ihtiyaçları karşılayabildiği için kullanılabilir durumdadır.
+WordMemoriser mikroservis mimarisinde geliştirilen bir web uygulamasıdır. Uygulama hala geliştirilmeye devam etmektedir ancak uygulama şu anda çekirdek ihtiyaçları karşılamaktadır yani kullanılabilir.
 
-Uygulamanın sunucu tarafı java için jdk 14.0.1 ve Spring 2.3.1.RELEASE ile geiştirildi, uygulamayı paketlemek için Apache Maven 3.6.3 kullanıldı ve veritabanı için Mysql 8.0.20 kullanıldı.
+Uygulamanın amacı yeni öğrenilen kelimelerle test yaparak ingilizce kelime haznesini geliştirmek üzerinedir. Uygulanın detayları aşağıda belirtilmiştir.
 
-Şu anda uygulamada 2 microservice ve 1 adet eureka server bulunmaktadır:
-- Eureka Server: Microservice'leri yönetmek için.
-- Word Service (Eureka Client): Word ve test operasyonları için.
-- Account Service (Eureka Client): Kullanıcı ve kullanıcı bağlantılı word'ler için.
+## Teknik Detaylar
+- Bu uygulama bir web uygulamasıdır. Bunun anlamı, uygulamanın bir sunucu, bir de istemci tarafı bulunmaktadır. Sunucu tarafı cloud üzerinde host edilecek mikroservis           mimarisinde geliştirilmiştir.
+- Uygulamadaki mikroservisler birbirleriyle http üzerinden haberleşmektedir ve bilgiler json formatında taşınmaktadır. (RESTful)
+- İstemci tarafı tasarlanırken mvc framework'ünden faydalanılmıştır. Yani bütün business logic java tarafında gerçekleştirilip server tarafından html döndürülmektedir.
+  - Mvc Controller'dan döndürülen html, html/css ile geliştirildi ve ayrıca javascript ve jquery 3.5.1 kütüphanesi kullanıldı.
+- Uygulamada 5 adet mikroservis bulunmaktadır:
+  - Eureka Server: Kayıt olan mikroservislerin listesinin tutulması için.
+    - JDK 11, Spring Boot 2.3.8 RELEASE (Container teknolojisini kullanabilmek için fakrklı bir java version'u seçildi)
+  - Gateway Service: Diğer mikroservis'leri kullanıcıdan soyutlayan gateway teknolojisini kullanmak için. Gateway olarak Netflix Zuul Gateway kullanıldı.
+    - JDK 8, Spring Boot 2.3.10 BUILD-SNAPSHOT
+  - Word Service: Spring boot uygulaması olarak ayağa kalkan RESTful web service ve spring mvc uygulaması. Word Service'in kullanıcı etkileşimi için mvc arayüzü ve diğer             mikroservislerle iletişim kurması için RESTful web arayüzü içermektedir. Kendi veritabanı bulunmaktadır.
+  - Account Service: Spring boot uygulaması olarak ayağa kalkan RESTful web service ve spring mvc uygulaması. Account Service'in kullanıcı etkileşimi için mvc arayüzü ve diğer       mikroservislerle iletişim kurması için RESTful web arayüzü içermektedir. Kendi veritabanı bulunmaktadır.
+  - Mvc Service projeden silinecektir.
+- Mysql veritabanı ile ORM teknolojisiyle iletişim kurmak için spring Jpa framework kullanılmıştır.
+- Bütün proje, Apache Maven 3.6.3 ile kurulup, paketlenip, dağıtılmaktadır.
+- Veri tabanı sunucusu için Mysql 8.0.20 kullanılmıştır (Gelecekte h2db kullanılması planlanmaktadır)
 
-Eğer uygulamayı kullanmak istiyorsanız bilgisayarınızda en az JRE 14.0.1 kurulu olmalıdır. (Eğer uygulamayı kullanmak isterseniz benimle iletişime geçebilirsiniz)
+Projenin genel ihtiyaçlarını 2 mikroservis karşılamaktadır:
+- Word Service: Word ve test operasyonları için.
+- Account Service: Kullanıcılar ve bağlantılı word'ler için.
+
+Aşağıdaki resim projenin mikroservis şeklindeki mimari tasarımını temsil etmektedir:
+<img src="https://github.com/ksavas/WordMemoriser/blob/develop/SS/Word%20Memories%20Architecture.PNG"><br>
+
+Not: Eğer uygulamayı kullanmak istiyorsanız bilgisayarınızda en az JRE 11 kurulu olmalıdır. (Eğer uygulamayı kullanmak isterseniz benimle iletişime geçebilirsiniz)
 
 Kullanıcı arayüzü (Web uygulaması) tarafı javascript ve jquery 3.5.1 ile geliştirildi.
 
-Bu uygulama spring boot ile geliştirildi çünkü bu uygulamayı gelecekte microservice mimarisinde kullanmayı planlıyorum. 
+### Gelecek Planları
 Gelecek için yapılan planlar:
 - Uygulamayı sadece Türkçe - İngilizce değil bütün diller için kullanmak.
 - Kelime dağarcığı dışında gramer yeteneklerininde geliştirilebileceği bir servise bulunması.
 - Farklı sınav servisleri sunmak ve sınav sonuçlarını takip etmek (Örneğin Sınav sonuçlarını Puan/Zaman grafiğinde görüntülemek ayrıca tablo görüntüsünde görüntülemek)
 - Gramer testi için yapay zekayı kullanarak anlamlı cümleler kurmak.
-- Kullanıcılar için bir üyelik sistemi geliştirmek.
-- Yukarıda tanımlanan bütün servisleri microservice mimarisi içinde birleştirmek.
 
-## Tanım
+## Proje Detayları
 WordMemoriser kelime dağarcığını geliştirmek için kullanılan bir web uygulamasıdır, uygulamanın kullanımı;
 
 ### Yeni Öğrenilen Kelime
