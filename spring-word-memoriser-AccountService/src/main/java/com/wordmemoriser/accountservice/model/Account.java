@@ -1,8 +1,12 @@
 package com.wordmemoriser.accountservice.model;
 
+
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Table;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,15 +29,5 @@ public class Account {
 
     @Getter
     @Setter
-    private String name;
-
-    @Getter
-    @Setter
-    private String lastName;
-
-    @Getter
-    @Setter
     private String password;
-
-
 }

@@ -15,13 +15,36 @@ public class AccountService {
     @Autowired
     AccountRepository accountRepository;
 
-    public ResponseEntity<Account> checkAccount(String nick, String password){
-        Optional<Account> account = accountRepository.findAll().stream().filter(x -> x.getNick().equals(nick) && x.getPassword().equals(password)).findFirst();
-        if(account.isPresent()){
-            return new ResponseEntity<>(account.get(), HttpStatus.OK);
+    public ResponseEntity<Account> signInControls(String nick, String password){
+        Optional<Account> optAccount = accountRepository.findAll().stream().filter(x -> x.getNick().equals(nick)).findFirst();
+        if(optAccount.isPresent()){
+            Account account = optAccount.get();
+            if(account.getPassword().equals(password)){
+                return new ResponseEntity<>(optAccount.get(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
         else {
             return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<Account> signUpControls(String nick, String password){
+        Optional<Account> optAccount = accountRepository.findAll().stream().filter(x -> x.getNick().equals(nick)).findFirst();
+        if(optAccount.isPresent()){
+            Account account = optAccount.get();
+            if(account.getPassword().equals(password)){
+                return new ResponseEntity<>(optAccount.get(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        else {
+            Account account = Account.builder()
+                    .nick(nick)
+                    .password(password)
+                    .build();
+            accountRepository.save(account);
+            return new ResponseEntity<>(account,HttpStatus.CREATED);
         }
     }
 

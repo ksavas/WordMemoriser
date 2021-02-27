@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<title>Word Memoriser</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/main.css">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script> 
+
+var examData={};
+var questionTracer = -1;
+var questionData = [];
+var answerButtons = [];
+var correctButtonId;
+
+$(document).ready(function() {
+	generateAnswerButtons();
+	disableBtnNextQuestion(true);
+});
+
+function generateAnswerButtons(){
+	answerButtons[0] = document.getElementById("answerButtonA");
+	answerButtons[1] = document.getElementById("answerButtonB");
+	answerButtons[2] = document.getElementById("answerButtonC");
+	answerButtons[3] = document.getElementById("answerButtonD");
+}
+function disableBtnNextQuestion(val){
+	document.getElementById("btnNextQuestion").disabled = val;
+	if(val == true){
+		jQuery('#btnNextQuestion').css('opacity', '0.1');
+	}else {
+		jQuery('#btnNextQuestion').css('opacity', '1');
+	}
+}
+
+function getExam(){
+	if(checkEmptySpaces()){
+		setPointLimits();
+		var responseText = getQuestionData();
+		if(responseText != ""){
+			generateQuestionData(responseText);
+			setNextQuestion();
+		}
+	}
+}
+
+function checkEmptySpaces(){
+	if(!examData.hasOwnProperty('questionType')){
+		alert("Question -> Answer type is empty !")
+		return false;
+	}
+	if(!examData.hasOwnProperty('language')){
+		alert("Language is empty !")
+		return false;
+	}
+	return true;
+}
+
+function setPointLimits(){
+	var maxPoint = $("#maxPoint").val();
+	var minPoint = $("#minPoint").val();
+	if(!maxPoint.trim()){
+		examData["upperLimit"]=10000;
+	}
+	else{
+		examData["upperLimit"] = maxPoint;
+	}
+	if(!minPoint.trim()){
+		examData["lowerLimit"]=-10000;
+	}
+	else{
+		examData["lowerLimit"] = minPoint;
+	}
+}
+
+function getQuestionData() {
+    var result="";
+    $.ajax({
+      url:"http://localhost:9091/exam",
+	  headers: { 
+        'Accept': 'application/json',
+        'Content-Type': 'application/json' 
+	  },
+	  type: "POST", 
+	  data: JSON.stringify(examData),
+	  dataType: 'json',
+      async: false,  
+      success:function(data) {
+         result = data; 
+      },
+	   error:function(data){
+		 alert("There aren't enough question to test for given conditions.");
+		 return "";
+    },
+   });
+   return result;
+}
+
+function generateQuestionData(responseText){
+	questionData = [];
+	questionTracer = -1;
+	for (var i = 0; i < responseText.length; i++){
+		var obj = responseText[i];
+		questionData[i] = responseText[i];
+	}
+}
+
+function setNextQuestion(){
+	questionTracer++;
+	if(questionData.length > questionTracer){
+		disableAnswerButtons(false);
+		clearAnswerButtonBorders();
+		createNewQuestion();
+		disableBtnNextQuestion(true);
+		setQuestionCounter();
+	}
+	else{
+		alert("Exam is finished !");
+	}
+}
+
+function disableAnswerButtons(val){
+	for (var i = 0; i < answerButtons.length; i++){
+		answerButtons[i].disabled = val;
+	}
+}
+
+function clearAnswerButtonBorders(){
+	for (var i = 0; i < answerButtons.length; i++){
+		$("#" + answerButtons[i].id).css('border', '');
+		$("#" + answerButtons[i].id).css('border-radius', '');
+	}
+}
+
+function createNewQuestion(){
+	var iterator = 0;
+	$("#questionHolder").text(questionData[questionTracer]["question"]);
+	var result = [];
+
+	for(var i in questionData[questionTracer]["options"]){
+		result.push([i, questionData[questionTracer]["options"][i]]);	
+	}
+
+	jQuery.each(questionData[questionTracer]["options"], function(i, val) {
+		if(val == true){
+			correctButtonId = answerButtons[iterator].id;
+		}
+		var element = answerButtons[iterator];
+		iterator++;
+		$(element).text(i);
+	});
+}
+
+function setQuestionCounter(){
+	var count = questionTracer + 1;
+	$("#questionCounter").text(count + "/" + questionData.length);
+}
+
+function answerClicked(id){
+	setTrueFalseBorders(id);
+	sendWordPoint(id);
+	disableAnswerButtons(true);
+	disableBtnNextQuestion(false);
+}
+
+function setTrueFalseBorders(id){
+	if(correctButtonId != id){
+		$('#' + id).css("border", "2px solid red");
+		$('#' + id).css('border-radius', '5px');
+	}
+	$('#' + correctButtonId).css('border', '2px solid blue');
+	$('#' + correctButtonId).css('border-radius', '5px');
+}
+
+function sendWordPoint(id){
+	var wordId = questionData[questionTracer]["wordId"];
+	var point = 0;
+	if(id == correctButtonId){
+		point++;
+	}
+	else {
+		point--;
+	}
+	$.ajax({
+		url: 'http://localhost:9091/exam',
+		type: 'PUT',
+		data: "wordId=" + wordId + "&" + "point=" + point,
+		success: function(data) {
+			console.log('WordPoint was updated.');
+		}
+	});
+}
+
+function clickedExam(name, id){
+	setExamTypeLang(name, id);
+	var elements = document.getElementsByName(name);
+	for (var i = 0; i < elements.length; i++) {
+		var $element = $(elements[i]);
+		if(id != elements[i].id){
+			$element.css('border', '');
+			$element.css('border-radius', '');
+		}
+		else{
+			$element.css('border', '2px solid black');
+			$element.css('border-radius', '5px');
+		}
+	}  
+}
+
+function setExamTypeLang(name, id){
+	if (name == "lang"){	
+		examData["language"] = id;
+	}
+	else if (name == "examtype"){
+		var splittedValue = id.split("|");
+		examData["questionType"] = splittedValue[0];
+		examData["answerType"] = splittedValue[1];
+	}
+}
+
+
+</script>
+</head>
+
+<body>
+
+<div>
+  <div class="wordMem-bar wordMem-padding" style="letter-spacing:4px;">
+	<label class="wordMem-bar-item">Word Memoriser - Exam</label>
+    <div class="wordMem-right">
+		<button id="btnAddWord" type="button" class="wordMem-bar-item wordMem-button"  onclick="location.href='/addWord';">Add Word</button>
+		<button id="btnExam" type="button" class="wordMem-bar-item wordMem-button" onclick="location.href='/exam';">Exam</button>
+		<button id="btnResult" type="button" class="wordMem-bar-item wordMem-button" onclick="location.href='/results';">Results</button>
+    </div>
+  </div>
+</div>
+<div class="wordMem-card" style="margin-top:20px;">
+	<table border="0"  style="margin-left:35%; width=2100px;">
+		<tr style="text-align:center;  height:50px;">
+			<td width="110px" colspan="2">
+				<button name="lang" onclick="clickedExam(this.name, this.id)"  class="wordMem-button" id="TR">TR -> EN</button>
+			</td>
+			<td width="110px" colspan="2">
+				<button name="lang" onclick="clickedExam(this.name, this.id)"  class="wordMem-button" id="EN">EN -> TR</button>
+			</td>
+			<td rowspan="2" style="white-space:nowrap; max-width:100%;">
+				<table>
+					<tr>
+						<td><label>Max Point   </label><input type="number" style="text-align:center;" placeholder="Empty Means All" id="maxPoint" name="fname"></td>
+					</tr>
+					<tr>
+						<td><label>Min Point   </label><input type="number" style="text-align:center;" placeholder="Empty Means All" id="minPoint" name="fname"></td>
+					</tr>
+				</table>
+			</td>
+			<td rowspan="2" style="white-space:nowrap; max-width:100%;"><button name="getter" onclick="getExam();"  class="wordMem-button" id ="1" style="font-size: 20px;" >Get Exam</button></td>
+		</tr>
+	</table>
+	<table border="0"  style="margin-left:38%; width=2100px;">
+		<tr style="text-align:center; height:50px;">
+			<td><button name="examtype" style="width:150px;" onclick="clickedExam(this.name, this.id)"  class="wordMem-button" id ="WORD|WORD">Word -> Word</button></td>
+			<td><button name="examtype" style="width:150px;" onclick="clickedExam(this.name, this.id)"  class="wordMem-button" id ="WORD|MEANING">Word -> Meaning</button></td>
+			<td><button name="examtype" style="width:150px;" onclick="clickedExam(this.name, this.id)"  class="wordMem-button" id ="MEANING|WORD">Meaning -> Word</button></td>
+		</tr>
+	</table>
+</div>
+
+<div class="wordMem-card" style="margin-left:20%; margin-top:5%; margin-right:20%; height:100%;">
+	<table border="0" style="table-layout:fixed; width:100%; margin-top:2%; ">
+		<tr style="text-align:center">
+			<td ><label id="questionCounter" name="holder" style="display:flex; overflow: auto; padding:4px 8px; justify-content: center;  align-items : center; white-space:pre-wrap; word-wrap:break-word; max-height:150px; height:50px;" class="wordMem-bar-item"></label></td>
+			<td ><button id ="btnNextQuestion" name="btnNextQuestion" style="width:150px;" onclick="setNextQuestion(this.name, this.id)"  class="wordMem-button">Next Question</button></td>
+		</tr>
+		<tr style="text-align:center" colspan="3">
+			<td colspan="2"><label id="questionHolder" name="holder" style="display:flex; overflow: auto; padding:4px 8px; justify-content: center;  align-items : center; white-space:pre-wrap; word-wrap:break-word; max-height:150px; height:150px;" class="wordMem-bar-item"></label></td>
+		</tr>
+		<tr style="text-align:center">
+			<td colspan="2"><button id="answerButtonA" name="answerButton" style="overflow: auto; padding:4px 8px; max-width:100%; width:100%; vertical-align:middle; white-space:pre-wrap; word-wrap:break-word; max-height:80px; height:80px;"  onclick="answerClicked(this.id)"  class="wordMem-button"></button> </td>
+		</tr>
+		<tr style="text-align:center">
+			<td colspan="2"><button id="answerButtonB" name="answerButton" style="overflow: auto; padding:4px 8px; max-width:100%; width:100%; vertical-align:middle; white-space:pre-wrap; word-wrap:break-word; max-height:80px; height:80px;"  onclick="answerClicked(this.id);"  class="wordMem-button"></button> </td>
+		</tr>
+		<tr style="text-align:center">
+			<td colspan="2"><button id="answerButtonC" name="answerButton" style="overflow: auto; padding:4px 8px; max-width:100%; width:100%; vertical-align:middle; white-space:pre-wrap; word-wrap:break-word; max-height:80px; height:80px;"  onclick="answerClicked(this.id);"  class="wordMem-button"></button> </td>
+		</tr>
+		<tr style="text-align:center"><td colspan="2"><button id="answerButtonD" name="answerButton" style="overflow: auto; padding:4px 8px; max-width:100%; width:100%; vertical-align:middle; white-space:pre-wrap; word-wrap:break-word; max-height:80px; height:80px;"  onclick="answerClicked(this.id);"  class=" wordMem-button"></button> </td>
+		</tr>			
+	</table>
+</div>
+</body>
+</html>
