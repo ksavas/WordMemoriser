@@ -4,7 +4,7 @@
 
 WordMemoriser is a web application that is being developed in microservices architecture. This appllication is still being developed, but the application provides the core needs at the moment, so it can be used.
 
-The purpose of the application is improving english vocabulary by testing about new learnt words. The detailed information has been explained belowe.
+The purpose of the application is improving english vocabulary by testing about new learnt words. The detailed information has been explained below.
 
 ## Technical details
 - The application is a web application which means, the application has a client side and and server side. The server side is developed in microservices architecture that shall   be deployed on cloud. 
