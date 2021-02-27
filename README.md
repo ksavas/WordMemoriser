@@ -30,7 +30,7 @@ There are 2 microservices that provide main needs of the project:
 - Account Service (Eureka Client): For account and account related word operations.
 
 This figure represents microservice design of the project:
-<img src="https://github.com/ksavas/WordMemoriser/tree/develop/SS/Word Memories Architecture.PNG"><br>
+<img src="https://github.com/ksavas/WordMemoriser/tree/develop/SS/Word Memories Architecture.png"><br>
 
 
 If you want to use that application you need JRE 11 at least. (If you want to use that application please contact with me)
