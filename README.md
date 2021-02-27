@@ -8,7 +8,7 @@ The purpose of the application is improving english vocabulary by testing about 
 
 ## Technical details
 - The application is a web application which means, the application has a client side and and server side. The server side is developed in microservices architecture that shall   be deployed on cloud. 
-- The microservices are communicating each other over http and the files are tranport as JSON (RESTful).
+- The microservices are communicating each other over http and the informations are tranported in JSON format (RESTful).
 - The client side is designed in mvc framework, which means whole business logic are performed in server side and the html result is returned.
   - The html result is developed in html/css and also javascirpt language and jquery 3.5.1. and of course mvc technology.
 - The application has 5 microservices:
