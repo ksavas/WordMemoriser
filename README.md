@@ -2,19 +2,38 @@
 
 [Türkçe](https://github.com/ksavas/WordMemoriser/blob/master/README-Tr.md)
 
-WordMemoriser is a web application that is being developed in microservices architecture in order to improve english vocabulary. This appllication is still being developed, but the application 
-provides the core needs at the moment, so it can be used.
+WordMemoriser is a web application that is being developed in microservices architecture. This appllication is still being developed, but the application provides the core needs at the moment, so it can be used.
 
-The technologies that is being used to develop Word Memoriser microservice; jdk 14.0.1 and Spring 2.3.1.RELEASE for code, Apache Maven 3.6.3 for deploying and Mysql 8.0.20 for database.
+The purpose of the application is improving english vocabulary by testing about new learnt words. The detailed information has been explained belowe.
 
-There are 2 microservices and 1 eureka server in the application at the moment:
-- Eureka Server: For Managing microservices.
+##The technical details(project info, programming languages, frameworks etc.) about the application:
+- The application is a web application which means, the application has a client side and and server side. The server side is developed in microservices architecture that shall   be deployed on cloud. 
+- The microservices are communicating each other over http and the files are tranport as JSON (RESTful).
+- The client side is designed in mvc framework, which means whole business logic are performed in server side and the html result is returned.
+  - The html result is developed in html/css and also javascirpt language and jquery 3.5.1. and of course mvc technology.
+- The application has 5 microservices:
+  - Eureka Server: For holding the list of microservices in a place by registering them.
+    - JDK 11, Spring Boot 2.3.8 RELEASE (Different Java version for containers)
+  - Gateway Service: For abstracting microservices from the user by using gateway technology. Netflix Zuul Gateway is used for gateway proxy.
+    - JDK 8, Spring Boot 2.3.10 BUILD-SNAPSHOT
+  - Word Service: Java spring boot mvc and RESTful webservice. The Word Service has an mvc interface for user ineraction and also has RESTful web service for communicating with       other microservices. It has its own database.
+    - JDK 8, Spring Boot 2.3.1 RELEASE
+  - Account Service: Java spring boot mvc and RESTful webservice. The Word Service has an mvc interface for user ineraction and also has RESTful web service for interacting with     other microservices. It has its own database.
+    - JDK 8, Spring Boot 2.3.1 RELEASE
+  - Mvc Service is going to be removed from project
+- Spring Jpa framework is used for ORM with mysql db. (h2db is going to be used in future)
+- Whole project is installed, packaged and deployed via Apache Maven 3.6.3ç
+- Mysql 8.0.20 is used for database. (h2db is going to be used in future)
+
+There are 2 microservices that provide main needs of the project:
 - Word Service (Eureka Client): For word and test operations.
 - Account Service (Eureka Client): For account and account related word operations.
 
-If you want to use that application you need JRE 14.0.1 at least. (If you want to use that application please contact with me)
+This figure represents microservice design of the project:
+<img src="https://github.com/ksavas/WordMemoriser/tree/develop/SS/Word Memories Architecture.PNG"><br>
 
-The UI (Web App) part is developed with javascript and jquery 3.5.1.
+
+If you want to use that application you need JRE 11 at least. (If you want to use that application please contact with me)
 
 The application is delevoped with spring boot because I'm planning to transform this application to microservices in future. 
 The plans for the future are:
@@ -22,8 +41,6 @@ The plans for the future are:
 - Besides vocabulary, using this application in order to improve grammar skills.
 - Exam service for different exam styles and tracing exam result (e.g. displaying exam results in point/time graph and also displaying exam results in table view)
 - Creating meaningful sentences by taking advantage of AI for testing grammar.
-- Creating account system for the users.
-- Putting all these things above into microservice architecture.
 
 ## Description
 WordMemoriser is a web application in order to improve english vocabulary. The usage of the application;
