@@ -33,8 +33,9 @@ This figure represents microservice design of the project:
 <img src="https://github.com/ksavas/WordMemoriser/blob/develop/SS/Word%20Memories%20Architecture.PNG"><br>
 
 
-If you want to use that application you need JRE 11 at least. (If you want to use that application please contact with me)
+Note: If you want to use that application you need JRE 11 at least. (If you want to use that application please contact with me)
 
+### Future Plans
 The application is delevoped with spring boot because I'm planning to transform this application to microservices in future. 
 The plans for the future are:
 - Using this application for any kind of languages, not just Turkish - english.
