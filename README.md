@@ -30,7 +30,7 @@ There are 2 microservices that provide main needs of the project:
 - Account Service: For account and account related word operations.
 
 This figure represents microservice design of the project:
-<img src="https://github.com/ksavas/WordMemoriser/blob/develop/SS/Word%20Memories%20Architecture.PNG"><br>
+<img src="https://github.com/ksavas/WordMemoriser/blob/develop/SS/Word%20Memories%20Architecture.png"><br>
 
 Note: If you want to use that application you need JRE 11 at least. (If you want to use that application please contact with me)
 
