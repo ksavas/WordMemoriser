@@ -28,7 +28,7 @@ Projenin genel ihtiyaçlarını 2 mikroservis karşılamaktadır:
 - Account Service: Kullanıcılar ve bağlantılı word'ler için.
 
 Aşağıdaki resim projenin mikroservis şeklindeki mimari tasarımını temsil etmektedir:
-<img src="https://github.com/ksavas/WordMemoriser/blob/develop/SS/Word%20Memories%20Architecture.PNG"><br>
+<img src="https://github.com/ksavas/WordMemoriser/blob/develop/SS/Word%20Memories%20Architecture.png"><br>
 
 Not: Eğer uygulamayı kullanmak istiyorsanız bilgisayarınızda en az JRE 11 kurulu olmalıdır. (Eğer uygulamayı kullanmak isterseniz benimle iletişime geçebilirsiniz)
 
