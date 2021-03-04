@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <title>Word Memoriser</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -232,6 +232,7 @@ function setExamTypeLang(name, id){
 		<button id="btnAddWord" type="button" class="wordMem-bar-item wordMem-button"  onclick="location.href='/addWord';">Add Word</button>
 		<button id="btnExam" type="button" class="wordMem-bar-item wordMem-button" onclick="location.href='/exam';">Exam</button>
 		<button id="btnResult" type="button" class="wordMem-bar-item wordMem-button" onclick="location.href='/results';">Results</button>
+		<button id="btnLogOut" type="button" class="wordMem-bar-item wordMem-button" th:onclick="|window.location.href='/mvc'|">Log Out</button>
     </div>
   </div>
 </div>

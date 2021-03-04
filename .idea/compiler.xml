@@ -7,19 +7,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="demo" />
-        <module name="gatewayservice" />
         <module name="WordService" />
         <module name="mvc" />
+        <module name="AccountService" />
         <module name="EurekaServer" />
+        <module name="GatewayService" />
         <module name="spring-word-memoriser-MvcService" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="AccountService" target="1.8" />
       <module name="AccountsService" target="11" />
-      <module name="demo" target="1.8" />
       <module name="EurekaServer" target="11" />
-      <module name="gatewayservice" target="1.8" />
+      <module name="GatewayService" target="1.8" />
       <module name="mvc" target="1.8" />
       <module name="MvcService" target="1.8" />
       <module name="spring-word-memoriser-AccountService" target="11" />
@@ -32,12 +32,12 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="AccountService" options="-parameters" />
       <module name="AccountsService" options="-parameters" />
       <module name="EurekaServer" options="-parameters" />
+      <module name="GatewayService" options="-parameters" />
       <module name="MvcService" options="-parameters" />
       <module name="WordService" options="-parameters" />
-      <module name="demo" options="-parameters" />
-      <module name="gatewayservice" options="-parameters" />
       <module name="mvc" options="-parameters" />
       <module name="spring-word-memoriser-AccountService" options="-parameters" />
       <module name="springboot2-webapp-thymeleaf" options="-parameters" />

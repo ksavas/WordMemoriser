@@ -1,38 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <title>Word Memoriser</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" th:href="@{mvc/css/main.css}">
 <head>
-</head>
 
+</head>
 <body>
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br>
-<div  class="wordMem-content" style="max-width:1100px" >
-	<div id="addWordHolder" class="wordMem-container" style="margin: 0px 0;"> 
-		<h1 style="position:absolute; left:41%;">Word Memoriser</h1><br><br>
-		<form style="margin-top:50px;">
-			<p><input id="trWord" class="wordMem-input wordMem-padding-16" style="text-align:center;" type="text" placeholder="User Name" required name="Name"></p>
-			<p><input id="enWord" class="wordMem-input wordMem-padding-16" style="text-align:center;" type="text" placeholder="Password" required name="Name"></p>
-		</form>
+<form action="#" data-th-action="@{mvc}" data-th-object="${account}" method="post">
+	<br><br><br><br><br><br><br><br><br><br>
+	<div  class="wordMem-content" style="max-width:1100px" >
+		<div id="addWordHolder" class="wordMem-container" style="margin: 0px 0;">
+			<h1 style="position:absolute; left:41%;">Word Memoriser</h1><br><br><br><br><br><br>
+			<p><input id="atest" class="wordMem-input wordMem-padding-16" style="text-align:center;" type="text" placeholder="User Name" required name="Name" th:field="*{nick}"></p>
+			<p><input id="enWord" class="wordMem-input wordMem-padding-16" style="text-align:center;" type="text" placeholder="Password" required name="Name" th:field="*{password}"></p>
+		</div>
+		<div>
+			<table border="0" style="table-layout:fixed; position:absolute; left:43%; width:250px;" >
+				<tr style="text-align:center; height:75px;">
+					<td><button class="wordMem-button" type="submit" name="action" value="signIn">sign In</button></td>
+					<td><button class="wordMem-button" type="submit" name="action" value="signUp">Sign Up</button></td>
+				</tr>
+				<tr style="text-align:center; height:75px;">
+					<td colspan="2"><label id="loginState"></label></td>
+				</tr>
+			</table>
+		</div>
 	</div>
-	<div>
-		<table border="0" style="table-layout:fixed; position:absolute; left:43%; width:250px;" >
-			<tr style="text-align:center; height:75px;"> 
-				<td><button class="wordMem-button  " onclick="saveWord();">Login (or Sign Up)</button></td>
-			</tr>
-		</table>
-	</div>
-</div>
-
-    <form action="#" th:action="@{/greeting}" th:object="${greeting}" method="post">
-    	<p>Id: <input type="text" th:field="*{id}" /></p>
-        <p>Message: <input type="text" th:field="*{content}" /></p>
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
-
-
+</form>
 </body>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+
+	var message = /*[[${accountReturnState}]]*/ 'default';
+	if(message != null){
+		document.getElementById('loginState').innerHTML = message;
+	}
+	/*]]>*/
+</script>
 </html>
