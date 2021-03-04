@@ -229,9 +229,9 @@ function setExamTypeLang(name, id){
   <div class="wordMem-bar wordMem-padding" style="letter-spacing:4px;">
 	<label class="wordMem-bar-item">Word Memoriser - Exam</label>
     <div class="wordMem-right">
-		<button id="btnAddWord" type="button" class="wordMem-bar-item wordMem-button"  onclick="location.href='/addWord';">Add Word</button>
-		<button id="btnExam" type="button" class="wordMem-bar-item wordMem-button" onclick="location.href='/exam';">Exam</button>
-		<button id="btnResult" type="button" class="wordMem-bar-item wordMem-button" onclick="location.href='/results';">Results</button>
+		<button id="btnAddWord" type="button" class="wordMem-bar-item wordMem-button" th:onclick="|window.location.href='/mvc/addWord'|">Add Word</button>
+		<button id="btnExam" type="button" class="wordMem-bar-item wordMem-button" th:onclick="|window.location.href='/mvc/exam'|">Exam</button>
+		<button id="btnResult" type="button" class="wordMem-bar-item wordMem-button" th:onclick="|window.location.href='/mvc/results'|">Results</button>
 		<button id="btnLogOut" type="button" class="wordMem-bar-item wordMem-button" th:onclick="|window.location.href='/mvc'|">Log Out</button>
     </div>
   </div>
