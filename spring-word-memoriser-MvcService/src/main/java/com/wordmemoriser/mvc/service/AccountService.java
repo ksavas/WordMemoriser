@@ -60,6 +60,9 @@ public class AccountService {
             if(statusCode == HttpStatus.CONFLICT.value()){
                 model.addAttribute("accountReturnState","The nick exists: " + account.getNick());
             }
+            else if(statusCode == HttpStatus.NOT_ACCEPTABLE.value()){
+                model.addAttribute("accountReturnState","The account id exists in the word service please check logs.. ");
+            }
             else {
                 model.addAttribute("accountReturnState","An internal error occured, please try again..");
             }
