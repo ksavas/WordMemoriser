@@ -24,11 +24,13 @@ public class ExamRequestTemplate {
 
     public int upperLimit;
 
+    public int remoteId;
+
     @Override
     public String toString(){
         return "{ QuestionType: " + questionType + ", AnswerType: " + answerType
                 + ", Language: " + language + ", LowerLimit: " + lowerLimit
-                + ", UpperLimit: " + upperLimit + " }";
+                + ", UpperLimit: " + upperLimit + ", remoteId: " + remoteId +" }";
     }
 
 }

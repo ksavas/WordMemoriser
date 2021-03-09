@@ -2,12 +2,7 @@ package com.wordmemoriser.Word;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,18 +12,18 @@ public class WordController {
     @Autowired
     private WordService wordService ;
 
-    @PostMapping("/word")
+    @PostMapping("/")
     public ResponseEntity<List<WordTemplate>> saveWord(@RequestBody WordTemplate wordRequestTemplate){
         return  wordService.saveWordIfNotExist(wordRequestTemplate);
     }
 
-    @GetMapping("/word")
-    public ResponseEntity<List<WordTemplate>> getAllWords(){
-        return  wordService.getAllWords();
+    @GetMapping("/{remoteId}")
+    public ResponseEntity<List<WordTemplate>> getAllWords(@PathVariable Integer remoteId){
+        return  wordService.getAllWords(remoteId);
     }
 
-    @DeleteMapping("/word")
-    public ResponseEntity<List<WordTemplate>> deleteWord(@RequestParam String id){
-        return wordService.deleteWord(id);
+    @DeleteMapping("/{remoteId}")
+    public ResponseEntity<List<WordTemplate>> deleteWord(@RequestParam String id, @PathVariable Integer remoteId){
+        return wordService.deleteWord(id,remoteId);
     }
 }

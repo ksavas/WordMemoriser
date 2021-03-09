@@ -5,6 +5,8 @@ import com.wordmemoriser.Word.Word;
 import com.wordmemoriser.Word.WordService;
 import com.wordmemoriser.WordMeaning.WordMeaningService;
 import com.wordmemoriser.WordValue.WordValueService;
+import com.wordmemoriser.account.AccountService;
+import com.wordmemoriser.account.AccountWordPointService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Collections;
+import java.util.*;
 
 @Service
 public class ExamService {
@@ -30,24 +29,26 @@ public class ExamService {
     @Autowired
     WordMeaningService wordMeaningService;
 
+    @Autowired
+    AccountService accountService;
+
+    @Autowired
+    AccountWordPointService accountWordPointService;
+
     static Logger logger = LogManager.getLogger(ExamService.class);
 
-    public HttpStatus updateWordPoint(Integer userId, Integer wordId, Integer point){//TODO test after new parameter: "Integer userId"
+    public HttpStatus updateWordPoint(Integer remoteId, Integer wordId, Integer point){
         logger.info("[updateWordPoint] Request Received.");
-        logger.log(Level.getLevel("INTERNAL"),"[updateWordPoint] userId:" + userId + ", wordId: " + wordId + ", point: " + point);
-
-        Boolean updateResult = wordService.updateWordPoint(userId, wordId, point);
-        logger.info("[updateWordPoint] Update Result is: " + updateResult);
-        return updateResult ? HttpStatus.OK : HttpStatus.NOT_ACCEPTABLE;
+        return accountWordPointService.updateAccountWordPoint(remoteId,wordId,point);
     }
 
     public ResponseEntity<List<WordQuestion>> getQuestionWords(ExamRequestTemplate examRequestTemplate){
         logger.info("[getQuestionWords] Request Received.");
         logger.log(Level.getLevel("INTERNAL"),"[getQuestionWords] ExamRequestTemplate: " + examRequestTemplate.toString());
 
-        relatedRepositoryControls();
         if(countControls()){
-            List<WordQuestion> wordQuestions = generateQuestions(examRequestTemplate.questionType,examRequestTemplate.answerType,examRequestTemplate.language,examRequestTemplate.lowerLimit,examRequestTemplate.upperLimit);
+            Set<Word> relatedWords = accountService.getWordsByAccount(examRequestTemplate.remoteId,examRequestTemplate.upperLimit, examRequestTemplate.lowerLimit);
+            List<WordQuestion> wordQuestions = generateQuestions(relatedWords, examRequestTemplate.questionType,examRequestTemplate.answerType,examRequestTemplate.language,examRequestTemplate.lowerLimit,examRequestTemplate.upperLimit);
             if(wordQuestions != null){
                 logger.log(Level.getLevel("INTERNAL"),"[getQuestionWords] Created word Questions: " + wordQuestions.toString());
                 Collections.shuffle(wordQuestions);
@@ -59,19 +60,13 @@ public class ExamService {
             }
         }
         else {
-            logger.warn("[getQuestionWords] Count Controls weren't passed, returning HTTP 406: NOT_ACCEPTABLE");
+            logger.warn("[getQuestionWords] there is not enough words for account Id:" + examRequestTemplate.remoteId +", returning HTTP 406: NOT_ACCEPTABLE");
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
-    private void relatedRepositoryControls(){
-        wordValueService.setRepository();
-        wordMeaningService.setRepository();
-
-        logger.info("[relatedRepositoryControls] WordMeaning and WordValues are synchoronized with db.");
-    }
-
     private Boolean countControls(){
+        relatedRepositoryControls();
         int minWordValueCount = wordValueService.getMinWordValueCount();
         int minWordMeaningCount = wordMeaningService.getMinWordMeaningCount();
         if(Math.min(minWordValueCount, minWordMeaningCount) < 5){
@@ -83,8 +78,15 @@ public class ExamService {
         return true;
     }
 
-    private List<WordQuestion> generateQuestions(ExamType questionType, ExamType answerType, Language askedLanguage, int lowerLimit, int upperLimit){
-        List<Word> words = wordService.getLimitedWords(lowerLimit,upperLimit);
+    private void relatedRepositoryControls(){
+        wordValueService.setRepository();
+        wordMeaningService.setRepository();
+
+        logger.info("[relatedRepositoryControls] WordMeaning and WordValues are synchoronized with db.");
+    }
+
+
+    private List<WordQuestion> generateQuestions(Set<Word> relatedWords, ExamType questionType, ExamType answerType, Language askedLanguage, int lowerLimit, int upperLimit){
         Language answerLanguage = askedLanguage.equals(Language.TR) ? Language.EN : Language.TR;
 
         logger.log(Level.getLevel("INTERNAL"),"[generateQuestions] Entered generateQuestions with values:");
@@ -94,11 +96,11 @@ public class ExamService {
         logger.log(Level.getLevel("INTERNAL"),"- Answer Language: " + answerLanguage);
         logger.log(Level.getLevel("INTERNAL"),"- Lower Limit: " + lowerLimit);
         logger.log(Level.getLevel("INTERNAL"),"- Upper Limit: " + upperLimit);
-        logger.log(Level.getLevel("INTERNAL"),"[generateQuestions] Limited words size: " + words.size());
+        logger.log(Level.getLevel("INTERNAL"),"[generateQuestions] Limited related words size: " + relatedWords.size());
 
-        if(null != words && words.size()>5){
+        if(null != relatedWords){
             List<WordQuestion> wordQuestions = new ArrayList<>();
-            for (Word word:words) {
+            for (Word word:relatedWords) {
                 WordQuestion wordQuestion = createQuestion(word,questionType,answerType,askedLanguage,answerLanguage);
                 wordQuestions.add(wordQuestion);
                 logger.log(Level.getLevel("DEEPER"),"[generateQuestions] Created Word Question: " + wordQuestion.toString());

@@ -31,6 +31,8 @@ public class WordTemplate {
 
     public Boolean forceSave;
 
+    public Integer remoteId;
+
     public Boolean isForceSave(){
         return forceSave;
     }
@@ -39,7 +41,7 @@ public class WordTemplate {
     public String toString(){
         return "{ Id: " + id + ", trWordValue: " + trWordValue + ", enWordValue: " + enWordValue + ", trMeaning: " + trMeaning
                 + ", enMeaning: " + enMeaning + ", example: " + example + ", wordType: " + wordType + ", point: " + point
-                + ", forceSave: " + forceSave;
+                + ", forceSave: " + forceSave + ", remoteId: " + remoteId;
     }
 
 }

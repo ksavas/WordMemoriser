@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-AccountService/AccountService.iml" filepath="$PROJECT_DIR$/spring-word-memoriser-AccountService/AccountService.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-EurekaServer/EurekaServer.iml" filepath="$PROJECT_DIR$/spring-word-memoriser-EurekaServer/EurekaServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-GatewayService/GatewayService.iml" filepath="$PROJECT_DIR$/spring-word-memoriser-GatewayService/GatewayService.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-WordService/WordService.iml" filepath="$PROJECT_DIR$/spring-word-memoriser-WordService/WordService.iml" />
-      <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-AccountService/demo.iml" filepath="$PROJECT_DIR$/spring-word-memoriser-AccountService/demo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-GatewayService/gatewayservice.iml" filepath="$PROJECT_DIR$/spring-word-memoriser-GatewayService/gatewayservice.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-word-memoriser-MvcService/mvc.iml" filepath="$PROJECT_DIR$/spring-word-memoriser-MvcService/mvc.iml" />
     </modules>
   </component>
