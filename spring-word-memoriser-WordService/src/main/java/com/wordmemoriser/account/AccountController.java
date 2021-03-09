@@ -12,8 +12,7 @@ public class AccountController {
     AccountService accountService;
 
     @GetMapping(value = "/mapAccount/{remoteId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus login(@PathVariable Integer remoteId){
+    public HttpStatus signUp(@PathVariable Integer remoteId){
         return accountService.mapAccount(remoteId);
     }
-
 }

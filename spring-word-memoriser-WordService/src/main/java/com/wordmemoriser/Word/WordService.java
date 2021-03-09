@@ -1,10 +1,8 @@
 package com.wordmemoriser.Word;
 
 import com.wordmemoriser.Exam.ExamType;
-import com.wordmemoriser.User.User;
-import com.wordmemoriser.User.UserRepository;
-import com.wordmemoriser.User.UserWordPoint;
-import com.wordmemoriser.User.UserWordPointRepository;
+import com.wordmemoriser.account.AccountWordPoint;
+import com.wordmemoriser.account.AccountWordPointRepository;
 import com.wordmemoriser.WordMeaning.WordMeaning;
 import com.wordmemoriser.WordMeaning.WordMeaningHolder;
 import com.wordmemoriser.WordMeaning.WordMeaningService;
@@ -43,76 +41,38 @@ public class WordService {
 
     Logger logger = LogManager.getLogger(WordService.class);
 
-    public Boolean updateWordPoint(Integer userId, Integer wordId, Integer point){
-        Optional<Word> _word = wordRespository
-                .findAll()
-                .stream()
-                .filter(_wordValue -> _wordValue.getId() == wordId)
-                .findFirst();
-        if(_word.isPresent()){
-            Word word = _word.get();
-            logger.log(Level.getLevel("INTERNAL"),"[updateWordPoint] The word has been found in db, word: " + word);
-            word.setPoint(userId, point);
-            wordRespository.save(word);
-            return true;
-        }
-        return false;
-    }
-
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    UserWordPointRepository userWordPointRepository;
+    AccountWordPointRepository accountWordPointRepository;
 
     @Autowired
     AccountRepository accountRepository;
 
-    public ResponseEntity<List<WordTemplate>> getAllWords(){
+    public ResponseEntity<List<WordTemplate>> getAllWords(Integer remoteId){
 
-        Account account = accountRepository.findAll().stream().findFirst().get();
+        Optional<Account> optAccount = accountRepository.findAll().stream().filter(x -> x.getRemoteId() == remoteId).findFirst();
 
-        Set<Word> words = account.getWords();
+        Account account = optAccount.get();
 
-/*
-        Account account = new Account();
-        account.setRemoteId(4);
-        account.setWords(new HashSet<>());
-
-        accountRepository.save(account);
-
-        List<Word> words = wordRespository.findAll();
-
-        account.getWords().addAll(words);
-
-        for (Word word:words
-             ) {
-            word.setAccount(account);
-        }
-
-        wordRespository.saveAll(words);
-*/
-
-        return new ResponseEntity<>(generateWordPointTemplates(wordRespository.findAll()), HttpStatus.OK);
+        return new ResponseEntity<>(generateWordPointTemplates(new ArrayList<>(account.getAccountWordPoints())), HttpStatus.OK);
     }
-    private List<WordTemplate> generateWordPointTemplates(List<Word> words){
+    private List<WordTemplate> generateWordPointTemplates(List<AccountWordPoint> accountWordPoints){
         List<WordTemplate> wordPointTemplates = new ArrayList<>();
-        for (Word word:words) {
+        for (AccountWordPoint accountWordPoint:accountWordPoints) {
             wordPointTemplates.add(WordTemplate
                     .builder()
-                    .id(word.getId())
-                    .trWordValue(word.getTrWordValue().getValue())
-                    .enWordValue(word.getEnWordValue().getValue())
-                    .trMeaning(word.getWordMeaning().getTurkishMeaning())
-                    .enMeaning(word.getWordMeaning().getEnglishMeaning())
-                    .wordType(word.getWordType())
-                    .point(word.getPoint())
+                    .id(accountWordPoint.getWord().getId())
+                    .trWordValue(accountWordPoint.getWord().getTrWordValue().getValue())
+                    .enWordValue(accountWordPoint.getWord().getEnWordValue().getValue())
+                    .trMeaning(accountWordPoint.getWord().getWordMeaning().getTurkishMeaning())
+                    .enMeaning(accountWordPoint.getWord().getWordMeaning().getEnglishMeaning())
+                    .wordType(accountWordPoint.getWord().getWordType())
+                    .point(accountWordPoint.getPoint())
                     .build());
         }
         return wordPointTemplates;
     }
 
-    public ResponseEntity<List<WordTemplate>> deleteWord(String strId){
+    public ResponseEntity<List<WordTemplate>> deleteWord(String strId, Integer remoteId){
         try{
             logger.info("[deleteWord] Request Received. Word Id: " + strId);
             Integer wordId = Integer.parseInt(strId);
@@ -134,16 +94,39 @@ public class WordService {
                 logger.log(Level.getLevel("INTERNAL"),"- En Word Value: " + enWordValue.toString());
                 logger.log(Level.getLevel("INTERNAL"),"- Word Meaning: " + wordMeaning.toString());
 
-                wordRespository.deleteWordById(word.getId());
-                wordValueService.deleteWordValueIfChildless(trWordValue);
-                wordValueService.deleteWordValueIfChildless(enWordValue);
-                wordMeaningService.deleteWordMeaningIfChildless(wordMeaning);
+                List<AccountWordPoint> accountWordPoints = accountWordPointRepository
+                        .findAll()
+                        .stream()
+                        .filter(x -> x.getWord().getId() == wordId)
+                        .collect(Collectors.toList());
 
-                logger.info("[deleteWord] The word and related WordValue and WordMeanings have been deleted from db successfully");
+                AccountWordPoint accountWordPoint = accountWordPoints
+                        .stream()
+                        .filter(x -> x.getAccount().getRemoteId() == remoteId)
+                        .findFirst()
+                        .get();
+
+                Account account = accountWordPoint.getAccount();
+
+                word.getAccountWordPoints().remove(accountWordPoint);
+                account.getAccountWordPoints().remove(accountWordPoint);
+
+                wordRespository.save(word);
+                accountRepository.save(account);
+
+                logger.info("[deleteWord] The word has been deleted from account successfully. remoteId: " + remoteId);
+
+                if(word.getAccountWordPoints().size() == 0){
+                    wordRespository.deleteWordById(word.getId());
+                    wordValueService.deleteWordValueIfChildless(trWordValue);
+                    wordValueService.deleteWordValueIfChildless(enWordValue);
+                    wordMeaningService.deleteWordMeaningIfChildless(wordMeaning);
+                    logger.info("[deleteWord] The word and related WordValue and WordMeanings have been deleted from db successfully");
+                }
 
                 List<WordTemplate> resultWordTemplates = generateWordTemplates(wordRespository.findAll());
 
-                logger.log(Level.getLevel("DEEPER"),"New Word Values after delete: " + resultWordTemplates.toString());
+                logger.log(Level.getLevel("DEEPER"),"New Words after delete: " + resultWordTemplates.toString());
 
                 return new ResponseEntity<>(resultWordTemplates, HttpStatus.OK);
             }
@@ -160,6 +143,8 @@ public class WordService {
 
         logger.log(Level.getLevel("INTERNAL"),"[getQuestionWords] WordRequestTemplate: " + wordRequestTemplate.toString());
 
+        logger.log(Level.getLevel("INTERNAL"),"[getQuestionWords] remoteId: " + wordRequestTemplate.remoteId);
+
         WordValueHolder wordValueHolder = wordValueControls(wordRequestTemplate.trWordValue,wordRequestTemplate.enWordValue);
 
         List<Word> intersectedWords = getIntersectedWordIds(wordValueHolder);
@@ -168,7 +153,7 @@ public class WordService {
         WordMeaningHolder wordMeaningHolder = wordMeaningControls(wordRequestTemplate);
         logger.log(Level.getLevel("DEEPER"),"[getQuestionWords] wordMeaningHolder: " + wordMeaningHolder.toString());
 
-        return wordSaveControls(intersectedWords,wordValueHolder,wordMeaningHolder,wordRequestTemplate.wordType,wordRequestTemplate.isForceSave());
+        return wordSaveControls(intersectedWords,wordValueHolder,wordMeaningHolder,wordRequestTemplate.wordType,wordRequestTemplate.isForceSave(),wordRequestTemplate.remoteId);
     }
     private WordValueHolder wordValueControls(String trWordValue, String enWordValue){
         return wordValueService.checkWordValues(trWordValue,enWordValue);
@@ -213,7 +198,7 @@ public class WordService {
     private WordMeaningHolder wordMeaningControls(WordTemplate wordRequestTemplate){
         return wordMeaningService.checkWordMeaning(wordRequestTemplate);
     }
-    private ResponseEntity<List<WordTemplate>> wordSaveControls(List<Word> intersectedWords, WordValueHolder wordValueHolder, WordMeaningHolder wordMeaningHolder, String wordType, Boolean isForceSave){
+    private ResponseEntity<List<WordTemplate>> wordSaveControls(List<Word> intersectedWords, WordValueHolder wordValueHolder, WordMeaningHolder wordMeaningHolder, String wordType, Boolean isForceSave, Integer remoteId){
 
         logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Entered wordSaveControls with Values:");
         logger.log(Level.getLevel("INTERNAL"),"- Intersected Words Size: " + intersectedWords.size());
@@ -222,6 +207,8 @@ public class WordService {
         logger.log(Level.getLevel("INTERNAL"),"- WordMeaningHolder: " + wordMeaningHolder.toString());
         logger.log(Level.getLevel("INTERNAL"),"- Word Type: " + wordType);
         logger.log(Level.getLevel("INTERNAL"),"- Force Save: " + isForceSave);
+
+        Account account = accountRepository.findAll().stream().filter(x -> x.getRemoteId() == remoteId).findFirst().get();
 
         if(wordValueHolder.isTrWordValueExisted() &&
            wordValueHolder.isEnWordValueExisted() &&
@@ -241,12 +228,22 @@ public class WordService {
             if(optionalWord.isPresent()){
                 Word word = optionalWord.get();
 
-                logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] The Word exists in db with same Word Values, same " +
-                        "Word Meaning and same Word Type, so returning HTTP 403: Forbidden");
-                logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Existed Word: " + word.toString());
+                if(account.getAccountWordPoints().stream().map(x -> x.getWord()).collect(Collectors.toSet()).contains(word)){//Kesin bak
+                    logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] The Word exists in db with same Word Values, same " +
+                            "Word Meaning and same Word Type and the account contains the word, so returning HTTP 403: Forbidden");
+                    logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Existed Word: " + word.toString());
 
-                List<Word> singleWord = Stream.of(word).collect(Collectors.toList());
-                return new ResponseEntity<>(generateWordTemplates(singleWord), HttpStatus.FORBIDDEN);
+                    List<Word> singleWord = Stream.of(word).collect(Collectors.toList());
+                    return new ResponseEntity<>(generateWordTemplates(singleWord), HttpStatus.FORBIDDEN);
+                }
+                else {
+                    saveWordToAccount(word,account);
+                    logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Existed Word has been added to the related account successfully. remoteId: " + remoteId + ", wordId: "+ word.getId());
+                    List<Word> singleWord = Stream.of(word).collect(Collectors.toList());
+                    return new ResponseEntity<>(generateWordTemplates(singleWord), HttpStatus.OK);
+                }
+
+
             }
 
             if(!isForceSave){
@@ -267,8 +264,10 @@ public class WordService {
         logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] En Word Value has been stored to db, Word Value: " + enWordValue.toString());
 
         Word newWord = saveNewWord(trWordValue,enWordValue,wordMeaning,wordType);
+        saveWordToAccount(newWord,account);
 
         logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Word has been stored to db, Word: " + newWord.toString());
+        logger.log(Level.getLevel("INTERNAL"),"[wordSaveControls] Word has been stored to account, Word: " + newWord.toString() + ", remoteId: " + remoteId);
         List<Word> singleWord = Stream.of(newWord).collect(Collectors.toList());
         return new ResponseEntity<>(generateWordTemplates(singleWord), HttpStatus.OK);
     }
@@ -280,6 +279,7 @@ public class WordService {
                 .enWordValue(enWordValue)
                 .wordMeaning(wordMeaning)
                 .wordType(wordType)
+                .accountWordPoints(new HashSet<>())
                 .build();
 
         trWordValue.addTrMeantWord(newWord);
@@ -287,6 +287,19 @@ public class WordService {
         wordMeaning.addWord(newWord);
 
         return wordRespository.save(newWord);
+    }
+
+    private void saveWordToAccount(Word word, Account account){
+        AccountWordPoint accountWordPoint = AccountWordPoint
+                .builder()
+                .account(account)
+                .word(word)
+                .build();
+        accountWordPointRepository.save(accountWordPoint);
+        account.getAccountWordPoints().add(accountWordPoint);
+        word.getAccountWordPoints().add(accountWordPoint);
+        accountRepository.save(account);
+        wordRespository.save(word);
     }
 
     private List<WordTemplate> generateWordTemplates(List<Word> words){
@@ -306,14 +319,6 @@ public class WordService {
     }
 
     // These methods below are called by different services.
-
-    public List<Word> getLimitedWords(int lowerLimit, int upperLimit){
-        return wordRespository
-                .findAll()
-                .stream()
-                .filter(_word -> _word.getPoint() > lowerLimit && _word.getPoint() < upperLimit)
-                .collect(Collectors.toList());
-    }
 
     public List<String> generateFalseOptions(Word word, Language answerLanguage, ExamType answerType){
         logger.log(Level.getLevel("DEEPER"),"[generateFalseOptions] Entered generateFalseOptions with values: ");

@@ -2,10 +2,12 @@ package com.wordmemoriser.mvc.controller;
 
 import com.wordmemoriser.mvc.model.Account;
 import com.wordmemoriser.mvc.service.AccountService;
+import com.wordmemoriser.mvc.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
@@ -13,6 +15,9 @@ public class MainController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    WordService wordService;
 
     @GetMapping("/")
     public String home(Model model){
@@ -27,19 +32,16 @@ public class MainController {
         return accountService.signUpControls(model,account);
     }
 
-    @GetMapping("/results")
-    public String getResultsPage(Model model){
-        return "Results";
+    @GetMapping("/results/{id}")
+    public String getResultsPage(Model model, @PathVariable Integer id){
+        return wordService.setPage(model,id,"Results");
     }
-    @GetMapping("/exam")
-    public String getExamPage(Model model){
-        return "Exam";
+    @GetMapping("/exam/{id}")
+    public String getExamPage(Model model, @PathVariable Integer id){
+        return wordService.setPage(model,id,"Exam");
     }
-    @GetMapping("/addWord")
-    public String getAddWordPage(Model model)
-    {
-        Account account = new Account();
-        model.addAttribute("account",account);
-        return "AddWord";
+    @GetMapping("/addWord/{id}")
+    public String getAddWordPage(Model model, @PathVariable Integer id) {
+        return wordService.setPage(model,id,"AddWord");
     }
 }

@@ -1,4 +1,4 @@
-package com.wordmemoriser.User;
+package com.wordmemoriser.account;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,11 +10,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name = "UserWordPoint")
+@Entity(name = "AccountWordPoint")
 @Getter
 @Setter
-@Table(name = "UserWordPoint")
-public class UserWordPoint {
+@Table(name = "AccountWordPoint")
+public class AccountWordPoint {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,13 +24,13 @@ public class UserWordPoint {
 
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", referencedColumnName = "Id")
+    @JoinColumn(name = "account_id", referencedColumnName = "Id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonIgnore
     @Getter
     @Setter
-    private User user;
+    private Account account;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "word_id", referencedColumnName = "Id")

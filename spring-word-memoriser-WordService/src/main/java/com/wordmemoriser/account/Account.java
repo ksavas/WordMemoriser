@@ -2,7 +2,6 @@ package com.wordmemoriser.account;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wordmemoriser.Word.Word;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,7 +28,7 @@ public class Account {
 
 
     @OneToMany(
-            targetEntity = com.wordmemoriser.Word.Word.class,
+            targetEntity = AccountWordPoint.class,
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER,
@@ -39,6 +38,6 @@ public class Account {
     @Setter
     @ToString.Exclude
     @JsonIgnore
-    private Set<Word> words;
+    private Set<AccountWordPoint> accountWordPoints;
 
 }

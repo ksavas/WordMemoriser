@@ -1,11 +1,14 @@
 package com.wordmemoriser.account;
 
+import com.wordmemoriser.Word.Word;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -20,9 +23,23 @@ public class AccountService {
         }
         Account account = Account.builder()
                 .remoteId(remoteId)
-                .words(new HashSet<>())
+                .accountWordPoints(new HashSet<>())
                 .build();
         accountRepository.save(account);
         return HttpStatus.CREATED;
+    }
+
+    public Set<Word> getWordsByAccount(Integer remoteId, int upperLimit, int lowerLimit){
+        return accountRepository
+                .findAll()
+                .stream()
+                .filter(x -> x.getRemoteId() == remoteId)
+                .findFirst()
+                .get()
+                .getAccountWordPoints()
+                .stream()
+                .map(x -> x.getWord())
+                .filter(_word -> _word.getPoint() > lowerLimit && _word.getPoint() < upperLimit)
+                .collect(Collectors.toSet());
     }
 }
