@@ -24,7 +24,8 @@ Uygulamanın amacı yeni öğrenilen kelimelerle test yaparak ingilizce kelime h
 - Veri tabanı sunucusu için Mysql 8.0.20 kullanılmıştır (Gelecekte h2db kullanılması planlanmaktadır)
 
 Projenin genel ihtiyaçlarını 2 mikroservis karşılamaktadır:
-- Word Service: Word ve test operasyonları için.
+- Mvc Service    : Bu servis kullanıcı ve bütün sunucu arasında bir köprü vazifesi görmektedir. Bu servis diğer servislerle iletişim kurup sonucu html olarak kullanıcıya döndürür.
+- Word Service   : Word ve test operasyonları için.
 - Account Service: Kullanıcılar ve bağlantılı word'ler için.
 
 Aşağıdaki resim projenin mikroservis şeklindeki mimari tasarımını temsil etmektedir:
