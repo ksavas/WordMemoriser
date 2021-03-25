@@ -16,12 +16,13 @@ Uygulamanın amacı yeni öğrenilen kelimelerle test yaparak ingilizce kelime h
     - JDK 11, Spring Boot 2.3.8 RELEASE (Container teknolojisini kullanabilmek için fakrklı bir java version'u seçildi)
   - Gateway Service: Diğer mikroservis'leri kullanıcıdan soyutlayan gateway teknolojisini kullanmak için. Gateway olarak Netflix Zuul Gateway kullanıldı.
     - JDK 8, Spring Boot 2.3.10 BUILD-SNAPSHOT
-  - Word Service: Spring boot uygulaması olarak ayağa kalkan RESTful web service ve spring mvc uygulaması. Word Service'in kullanıcı etkileşimi için mvc arayüzü ve diğer             mikroservislerle iletişim kurması için RESTful web arayüzü içermektedir. Kendi veritabanı bulunmaktadır.
-  - Account Service: Spring boot uygulaması olarak ayağa kalkan RESTful web service ve spring mvc uygulaması. Account Service'in kullanıcı etkileşimi için mvc arayüzü ve diğer       mikroservislerle iletişim kurması için RESTful web arayüzü içermektedir. Kendi veritabanı bulunmaktadır.
-  - Mvc Service projeden silinecektir.
+  - Word Service: Spring boot uygulaması olarak ayağa kalkan RESTful web service ve spring mvc uygulaması. Word Service'in diğer mikroservislerle iletişim kurması için RESTful web arayüzü içermektedir. Kendi veritabanı bulunmaktadır.
+  - Account Service: Spring boot uygulaması olarak ayağa kalkan RESTful web service ve spring mvc uygulaması. Account Service'in diğer mikroservislerle iletişim kurması için RESTful web arayüzü içermektedir. Kendi veritabanı bulunmaktadır.
 - Mysql veritabanı ile ORM teknolojisiyle iletişim kurmak için spring Jpa framework kullanılmıştır.
 - Bütün proje, Apache Maven 3.6.3 ile kurulup, paketlenip, dağıtılmaktadır.
 - Veri tabanı sunucusu için Mysql 8.0.20 kullanılmıştır (Gelecekte h2db kullanılması planlanmaktadır)
+- Logging için Spring Boot Log4j framework'ünden faydalanılmıştır.
+- Mvc framework'ünün html ile daha uygun kullanılabilmesi için Thymeleaf framework'ünden faydalanılmıştır.
 
 Projenin genel ihtiyaçlarını 2 mikroservis karşılamaktadır:
 - Mvc Service    : Bu servis kullanıcı ve bütün sunucu arasında bir köprü vazifesi görmektedir. Bu servis diğer servislerle iletişim kurup sonucu html olarak kullanıcıya döndürür.
