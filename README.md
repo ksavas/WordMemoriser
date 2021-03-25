@@ -16,14 +16,15 @@ The purpose of the application is improving english vocabulary by testing about 
     - JDK 11, Spring Boot 2.3.8 RELEASE (Different Java version for containers)
   - Gateway Service: For abstracting microservices from the user by using gateway technology. Netflix Zuul Gateway is used for gateway proxy.
     - JDK 8, Spring Boot 2.3.10 BUILD-SNAPSHOT
-  - Word Service: Java spring mvc and RESTful webservice that runs as spring boot application. The Word Service has an mvc interface for user ineraction and also has RESTful web     service for communicating with other microservices. It has its own database.
+  - Word Service: Java spring mvc and RESTful webservice that runs as spring boot application. The Word Service has an RESTful web service for communicating with other microservices. It has its own database.
     - JDK 8, Spring Boot 2.3.1 RELEASE
-  - Account Service: Java spring boot mvc and RESTful webservice. The Word Service has an mvc interface for user ineraction and also has RESTful web service for interacting with     other microservices. It has its own database.
+  - Account Service: Java spring boot mvc and RESTful webservice. The Word Service has an RESTful web service for interacting with other microservices. It has its own database.
     - JDK 8, Spring Boot 2.3.1 RELEASE
-  - Mvc Service is going to be removed from project
 - Spring Jpa framework is used for ORM with mysql db. (h2db is going to be used in future)
 - Whole project is installed, packaged and deployed via Apache Maven 3.6.3
 - Mysql 8.0.20 is used for database. (h2db is going to be used in future)
+- Spring Boot Log4j framework is used for logging.
+- Thymeleaf framework is used for utilized html of mvc framework.
 
 There are 2 microservices that provide main needs of the project:
 - Mvc Service    : This service stands as bridge between client and whole server. This service communicates with other services and returns the result as html
