@@ -26,7 +26,8 @@ The purpose of the application is improving english vocabulary by testing about 
 - Mysql 8.0.20 is used for database. (h2db is going to be used in future)
 
 There are 2 microservices that provide main needs of the project:
-- Word Service: For word and test operations.
+- Mvc Service    : This service stands as bridge between client and whole server. This service communicates with other services and returns the result as html
+- Word Service   : For word and test operations.
 - Account Service: For account and account related word operations.
 
 This figure represents microservice design of the project:
